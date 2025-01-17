@@ -1,49 +1,12 @@
-//--------------------------------------------------------------------------------------
-// File: KerberosEngine.cpp
-//
-// This application demonstrates texturing
-//
-// Copyright (c) Microsoft Corporation. All rights reserved.
-//--------------------------------------------------------------------------------------
-#include <windows.h>
-#include <d3d11.h>
-#include <d3dx11.h>
-#include <d3dcompiler.h>
-#include <xnamath.h>
-#include "resource.h"
-
-
-//--------------------------------------------------------------------------------------
-// Structures
-//--------------------------------------------------------------------------------------
-struct
-  SimpleVertex {
-  XMFLOAT3 Pos;
-  XMFLOAT2 Tex;
-};
-
-struct
-  CBNeverChanges {
-  XMMATRIX mView;
-};
-
-struct
-  CBChangeOnResize {
-  XMMATRIX mProjection;
-};
-
-struct
-  CBChangesEveryFrame {
-  XMMATRIX mWorld;
-  XMFLOAT4 vMeshColor;
-};
-
+#include "Prerequisites.h"
+#include "Window.h"
 
 //--------------------------------------------------------------------------------------
 // Global Variables
 //--------------------------------------------------------------------------------------
-HINSTANCE                           g_hInst = NULL;
-HWND                                g_hWnd = NULL;
+//HINSTANCE                           g_hInst = NULL;
+//HWND                                g_hWnd = NULL;
+Window                              g_window;
 D3D_DRIVER_TYPE                     g_driverType = D3D_DRIVER_TYPE_NULL;
 D3D_FEATURE_LEVEL                   g_featureLevel = D3D_FEATURE_LEVEL_11_0;
 ID3D11Device* g_pd3dDevice = NULL;
@@ -71,7 +34,7 @@ XMFLOAT4                            g_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
 //--------------------------------------------------------------------------------------
 // Forward declarations
 //--------------------------------------------------------------------------------------
-HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
+//HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT InitDevice();
 void CleanupDevice();
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -87,7 +50,7 @@ wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
   UNREFERENCED_PARAMETER(hPrevInstance);
   UNREFERENCED_PARAMETER(lpCmdLine);
 
-  if (FAILED(InitWindow(hInstance, nCmdShow)))
+  if (FAILED(g_window.init(hInstance, nCmdShow, WndProc)))
     return 0;
 
   if (FAILED(InitDevice()))
@@ -116,44 +79,42 @@ wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
   return (int)msg.wParam;
 }
 
-
-//--------------------------------------------------------------------------------------
-// Register class and create window
-//--------------------------------------------------------------------------------------
-HRESULT
-InitWindow(HINSTANCE hInstance, int nCmdShow) {
-  // Register class
-  WNDCLASSEX wcex;
-  wcex.cbSize = sizeof(WNDCLASSEX);
-  wcex.style = CS_HREDRAW | CS_VREDRAW;
-  wcex.lpfnWndProc = WndProc;
-  wcex.cbClsExtra = 0;
-  wcex.cbWndExtra = 0;
-  wcex.hInstance = hInstance;
-  wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-  wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-  wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-  wcex.lpszMenuName = NULL;
-  wcex.lpszClassName = "TutorialWindowClass";
-  wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
-  if (!RegisterClassEx(&wcex))
-    return E_FAIL;
-
-  // Create window
-  g_hInst = hInstance;
-  RECT rc = { 0, 0, 640, 480 };
-  AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-  g_hWnd = CreateWindow("TutorialWindowClass", "Kerberos Engine", WS_OVERLAPPEDWINDOW,
-    CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance,
-    NULL);
-  if (!g_hWnd)
-    return E_FAIL;
-
-  ShowWindow(g_hWnd, nCmdShow);
-
-  return S_OK;
-}
-
+////--------------------------------------------------------------------------------------
+//// Register class and create window
+////--------------------------------------------------------------------------------------
+//HRESULT
+//InitWindow(HINSTANCE hInstance, int nCmdShow) {
+//  // Register class
+//  WNDCLASSEX wcex;
+//  wcex.cbSize = sizeof(WNDCLASSEX);
+//  wcex.style = CS_HREDRAW | CS_VREDRAW;
+//  wcex.lpfnWndProc = WndProc;
+//  wcex.cbClsExtra = 0;
+//  wcex.cbWndExtra = 0;
+//  wcex.hInstance = hInstance;
+//  wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
+//  wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
+//  wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+//  wcex.lpszMenuName = NULL;
+//  wcex.lpszClassName = "TutorialWindowClass";
+//  wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
+//  if (!RegisterClassEx(&wcex))
+//    return E_FAIL;
+//
+//  // Create window
+//  g_hInst = hInstance;
+//  RECT rc = { 0, 0, 640, 480 };
+//  AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+//  g_hWnd = CreateWindow("TutorialWindowClass", "Kerberos Engine", WS_OVERLAPPEDWINDOW,
+//    CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance,
+//    NULL);
+//  if (!g_hWnd)
+//    return E_FAIL;
+//
+//  ShowWindow(g_hWnd, nCmdShow);
+//
+//  return S_OK;
+//}
 
 //--------------------------------------------------------------------------------------
 // Helper for compiling shaders with D3DX11
@@ -194,11 +155,6 @@ HRESULT
 InitDevice() {
   HRESULT hr = S_OK;
 
-  RECT rc;
-  GetClientRect(g_hWnd, &rc);
-  UINT width = rc.right - rc.left;
-  UINT height = rc.bottom - rc.top;
-
   UINT createDeviceFlags = 0;
 #ifdef _DEBUG
   createDeviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
@@ -223,13 +179,13 @@ InitDevice() {
   DXGI_SWAP_CHAIN_DESC sd;
   ZeroMemory(&sd, sizeof(sd));
   sd.BufferCount = 1;
-  sd.BufferDesc.Width = width;
-  sd.BufferDesc.Height = height;
+  sd.BufferDesc.Width = g_window.m_width;
+  sd.BufferDesc.Height = g_window.m_height;
   sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
   sd.BufferDesc.RefreshRate.Numerator = 60;
   sd.BufferDesc.RefreshRate.Denominator = 1;
   sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-  sd.OutputWindow = g_hWnd;
+  sd.OutputWindow = g_window.m_hWnd;
   sd.SampleDesc.Count = 1;
   sd.SampleDesc.Quality = 0;
   sd.Windowed = TRUE;
@@ -259,8 +215,8 @@ InitDevice() {
   // Create depth stencil texture
   D3D11_TEXTURE2D_DESC descDepth;
   ZeroMemory(&descDepth, sizeof(descDepth));
-  descDepth.Width = width;
-  descDepth.Height = height;
+  descDepth.Width = g_window.m_width;
+  descDepth.Height = g_window.m_height;
   descDepth.MipLevels = 1;
   descDepth.ArraySize = 1;
   descDepth.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -288,8 +244,8 @@ InitDevice() {
 
   // Setup the viewport
   D3D11_VIEWPORT vp;
-  vp.Width = (FLOAT)width;
-  vp.Height = (FLOAT)height;
+  vp.Width = (FLOAT)g_window.m_width;
+  vp.Height = (FLOAT)g_window.m_height;
   vp.MinDepth = 0.0f;
   vp.MaxDepth = 1.0f;
   vp.TopLeftX = 0;
@@ -490,7 +446,7 @@ InitDevice() {
   g_pImmediateContext->UpdateSubresource(g_pCBNeverChanges, 0, NULL, &cbNeverChanges, 0, 0);
 
   // Initialize the projection matrix
-  g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, width / (FLOAT)height, 0.01f, 100.0f);
+  g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, g_window.m_width / (FLOAT)g_window.m_height, 0.01f, 100.0f);
 
   CBChangeOnResize cbChangesOnResize;
   cbChangesOnResize.mProjection = XMMatrixTranspose(g_Projection);

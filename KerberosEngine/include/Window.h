@@ -8,19 +8,19 @@ public:
   ~Window() = default;
 
   HRESULT
-    init(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc);
+  init(HINSTANCE hInstance, int nCmdShow, WNDPROC wndproc);
 
   void
-    update();
+  update();
 
   void
-    render();
+  render();
 
   void
-    destroy();
+  destroy();
 
 public:
-  HWND       m_hWnd = nullptr;
+  HWND m_hWnd = nullptr;
   unsigned int m_width;
   unsigned int m_height;
 

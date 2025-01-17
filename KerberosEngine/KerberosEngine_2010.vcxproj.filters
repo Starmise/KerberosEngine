@@ -26,10 +26,16 @@
     <ClInclude Include="include\BaseApp.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="include\Window.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
     <ClCompile Include="Source\BaseApp.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Window.cpp">
       <Filter>Source</Filter>
     </ClCompile>
   </ItemGroup>
