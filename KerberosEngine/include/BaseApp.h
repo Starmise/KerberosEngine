@@ -1,8 +1,8 @@
 #pragma once
 #include "Prerequisites.h"
 
-class BaseApp
-{
+class 
+BaseApp {
 public:
   /**
    * @brief Default constructor and destructor 
