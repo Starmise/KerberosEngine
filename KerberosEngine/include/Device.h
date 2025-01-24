@@ -62,6 +62,8 @@ public:
   CreateSamplerState(const D3D11_SAMPLER_DESC* pSamplerDesc,
                     ID3D11SamplerState** ppSamplerState);
 
-private:
+
   ID3D11Device* m_device = nullptr;
+
+private:
 };
