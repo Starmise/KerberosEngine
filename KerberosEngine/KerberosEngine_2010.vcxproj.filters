@@ -35,6 +35,12 @@
     <ClInclude Include="include\Device.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="include\DeviceContext.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Texture.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
@@ -45,6 +51,12 @@
       <Filter>Source</Filter>
     </ClCompile>
     <ClCompile Include="Source\Device.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DeviceContext.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Texture.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
