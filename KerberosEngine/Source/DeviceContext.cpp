@@ -89,17 +89,58 @@ DeviceContext::UpdateSubresource(ID3D11Resource* pDstResource,
                                 const void* pSrcData,
                                 unsigned int SrcRowPitch, 
                                 unsigned int SrcDepthPitch) {
+  if (!pDstResource || !pSrcData) {
+    ERROR("DeviceContext", "UpdateSubresource",
+      "Invalid arguments: pDstResource or pSrcData is nullptr");
+    return;
+  }
+
+  m_deviceContext->UpdateSubresource(pDstResource,
+                                    DstSubresource,
+                                    pDstBox,
+                                    pSrcData,
+                                    SrcRowPitch,
+                                    SrcDepthPitch);
 }
 
 void 
 DeviceContext::ClearRenderTargetView(ID3D11RenderTargetView* pRenderTargetView, 
                                     const FLOAT ColorRGBA[4]) {
+  // Validar parámetros
+  if (!pRenderTargetView) {
+    ERROR("DeviceContext", "ClearRenderTargetView", "pRenderTargetView is nullptr");
+    return;
+  }
+  if (!ColorRGBA) {
+    ERROR("DeviceContext", "ClearRenderTargetView", "ColorRGBA is nullptr");
+    return;
+  }
+
+  // Limpiar el render target
+  m_deviceContext->ClearRenderTargetView(pRenderTargetView, ColorRGBA);
 }
 
 void 
-DeviceContext::ClearDepthStencilView(ID3D11DepthStencilView* pDepthStencilView, 
+DeviceContext::ClearDepthStencilView(ID3D11DepthStencilView* pDepthStencilView,
+                                    unsigned int ClearFlags,
                                     FLOAT Depth, 
                                     UINT8 Stencil) {
+  // Validar parámetros
+  if (!pDepthStencilView) {
+    ERROR("DeviceContext", "ClearDepthStencilView",
+      "pDepthStencilView is nullptr");
+    return;
+  }
+
+  // Validar banderas de limpieza
+  if ((ClearFlags & (D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL)) == 0) {
+    ERROR("DeviceContext", "ClearDepthStencilView",
+      "Invalid ClearFlags: must include D3D11_CLEAR_DEPTH or D3D11_CLEAR_STENCIL");
+    return;
+  }
+
+  // Limpiar el depth stencil
+  m_deviceContext->ClearDepthStencilView(pDepthStencilView, ClearFlags, Depth, Stencil);
 }
 
 void 
@@ -107,40 +148,87 @@ DeviceContext::VSSetShader(ID3D11VertexShader* pVertexShader,
                           ID3D11ClassInstance* 
                           const* ppClassInstances, 
                           unsigned int NumClassInstances) {
+  if (!pVertexShader) {
+    ERROR("DeviceContext", "VSSetShader", "pVertexShader is nullptr");
+    return;
+  }
+
+  m_deviceContext->VSSetShader(pVertexShader, ppClassInstances, NumClassInstances);
 }
 
 void 
 DeviceContext::VSSetConstantBuffers(unsigned int StartSlot, 
                                     unsigned int NumBuffers, 
                                     ID3D11Buffer* const* ppConstantBuffers) {
+  // Validar parámetros
+  if (!ppConstantBuffers) {
+    ERROR("DeviceContext", "VSSetConstantBuffers", "ppConstantBuffers is nullptr");
+    return;
+  }
+
+  // Asignar los constant buffers al vertex shader
+  m_deviceContext->VSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 void 
 DeviceContext::PSSetShader(ID3D11PixelShader* pPixelShader, 
                           ID3D11ClassInstance* const* ppClassInstances, 
                           unsigned int NumClassInstances) {
+  if (!pPixelShader) {
+    ERROR("DeviceContext", "PSSetShader", "pPixelShader is nullptr");
+    return;
+  }
+  m_deviceContext->PSSetShader(pPixelShader, ppClassInstances, NumClassInstances);
 }
 
 void 
 DeviceContext::PSSetConstantBuffers(unsigned int StartSlot, 
                                     unsigned int NumBuffers, 
                                     ID3D11Buffer* const* ppConstantBuffers) {
+  // Validar parámetros
+  if (!ppConstantBuffers) {
+    ERROR("DeviceContext", "PSSetConstantBuffers", "ppConstantBuffers is nullptr");
+    return;
+  }
+
+  // Asignar los constant buffers al pixel shader
+  m_deviceContext->PSSetConstantBuffers(StartSlot, NumBuffers, ppConstantBuffers);
 }
 
 void 
 DeviceContext::PSSetShaderResources(unsigned int StartSlot, 
                                     unsigned int NumViews, 
                                     ID3D11ShaderResourceView* const* ppShaderResourceViews) {
+  if (!ppShaderResourceViews) {
+    ERROR("DeviceContext", "PSSetShaderResources", "ppShaderResourceViews is nullptr");
+    return;
+  }
+
+  m_deviceContext->PSSetShaderResources(StartSlot, NumViews, ppShaderResourceViews);
 }
 
 void 
 DeviceContext::PSSetSamplers(unsigned int StartSlot, 
                             unsigned int NumSamplers, 
                             ID3D11SamplerState* const* ppSamplers) {
+  if (!ppSamplers) {
+    ERROR("DeviceContext", "PSSetSamplers", "ppSamplers is nullptr");
+    return;
+  }
+
+  m_deviceContext->PSSetSamplers(StartSlot, NumSamplers, ppSamplers);
 }
 
 void 
 DeviceContext::DrawIndexed(unsigned int IndexCount, 
                           unsigned int StartIndexLocation, 
                           INT BaseVertexLocation) {
+  // Validar parámetros
+  if (IndexCount == 0) {
+    ERROR("DeviceContext", "DrawIndexed", "IndexCount is zero");
+    return;
+  }
+
+  // Ejecutar el dibujo
+  m_deviceContext->DrawIndexed(IndexCount, StartIndexLocation, BaseVertexLocation);
 }

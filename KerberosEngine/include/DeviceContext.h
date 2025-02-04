@@ -60,6 +60,7 @@ public:
 
   void
   ClearDepthStencilView(ID3D11DepthStencilView* pDepthStencilView,
+                        unsigned int ClearFlags,
                         FLOAT Depth,
                         UINT8 Stencil);
 

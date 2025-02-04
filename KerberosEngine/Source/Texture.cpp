@@ -6,8 +6,8 @@
 
 HRESULT
 Texture::init(Device device,
-  const std::string& textureName,
-  ExtensionType extensionType) {
+        const std::string& textureName,
+        ExtensionType extensionType) {
   if (!device.m_device) {
     ERROR("Texture", "init", "Device is nullptr in texture loading method");
     return E_POINTER;
@@ -94,12 +94,12 @@ Texture::init(Device device,
 
 HRESULT
 Texture::init(Device device,
-  unsigned int width,
-  unsigned int height,
-  DXGI_FORMAT Format,
-  unsigned int BindFlags,
-  unsigned int sampleCount,
-  unsigned int qualityLevels) {
+              unsigned int width,
+              unsigned int height,
+              DXGI_FORMAT Format,
+              unsigned int BindFlags,
+              unsigned int sampleCount,
+              unsigned int qualityLevels) {
   if (!device.m_device) {
     ERROR("Texture", "init", "Device is nullptr in texture inicialization method");
     return E_POINTER;

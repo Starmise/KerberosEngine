@@ -19,9 +19,9 @@ public:
   /**
    * @brief Initializes the swap chain with the given device, context, back buffer, and window.
    */
-  void
+  HRESULT
   init(Device& device,
-      DeviceContext& deviceConext,
+      DeviceContext& deviceContext,
       Texture& backBuffer,
       Window window);
 
@@ -65,7 +65,7 @@ private:
   * por pixel. Para usar esta técnica se usa lo siguiente:
   */
   unsigned int m_sampleCount; // Number of MSAA samples (4x MSAA)
-  unsigned int m_qualityLeveles;
+  unsigned int m_qualityLevels;
 
   // Punteros a las interfaces DXGI
   IDXGIDevice* m_dxgiDevice = nullptr; 

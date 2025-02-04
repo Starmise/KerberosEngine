@@ -4,8 +4,8 @@
 class Device
 {
 public:
-  Device();
-  ~Device();
+  Device() = default;
+  ~Device() = default;
 
   void
   init();

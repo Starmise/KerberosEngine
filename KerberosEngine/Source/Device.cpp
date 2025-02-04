@@ -102,11 +102,6 @@ Device::CreateVertexShader(const void* pShaderBytecode,
     return E_INVALIDARG;
   }
 
-  if (!pClassLinkage) {
-    ERROR("Device", "CreateVertexShader", "Invalid class linkage");
-    return E_INVALIDARG;
-  }
-
   if (!ppVertexShader) {
     ERROR("Device", "CreateVertexShader", "ppVertexShader is nullptr");
     return E_POINTER;

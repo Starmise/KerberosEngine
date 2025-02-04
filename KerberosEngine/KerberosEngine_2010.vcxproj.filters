@@ -59,6 +59,9 @@
     <ClCompile Include="Source\Texture.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Swapchain.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="KerberosEngine.fx">
