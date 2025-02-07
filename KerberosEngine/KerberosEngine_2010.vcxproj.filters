@@ -41,6 +41,9 @@
     <ClInclude Include="include\Texture.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="include\DepthStencil.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
@@ -61,6 +64,9 @@
     </ClCompile>
     <ClCompile Include="Source\Swapchain.cpp">
       <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DepthStencil.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
