@@ -15,18 +15,21 @@ public:
 
   /*
   */
-  void
-  init(Device& device, Texture& depthStencil, DXGI_FORMAT format);
+  HRESULT
+  init(Device& device, Texture& backBuffer, DXGI_FORMAT format);
 
   void
   update();
 
   void
-  render(DeviceContext& deviceContext, DepthStencilView& depthStencilView, unsigned int numOfViews, float clearColor[4]);
+  render(DeviceContext& deviceContext, 
+        DepthStencilView& depthStencilView, 
+        unsigned int numOfViews, 
+        float clearColor[4]);
 
   void
   destroy();
 
-private:
+public:
   ID3D11RenderTargetView* m_renderTargetView = nullptr;
 };

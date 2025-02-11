@@ -41,7 +41,10 @@
     <ClInclude Include="include\Texture.h">
       <Filter>Include</Filter>
     </ClInclude>
-    <ClInclude Include="include\DepthStencil.h">
+    <ClInclude Include="include\DepthStencilView.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RenderTargetView.h">
       <Filter>Include</Filter>
     </ClInclude>
   </ItemGroup>
@@ -65,7 +68,10 @@
     <ClCompile Include="Source\Swapchain.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="Source\DepthStencil.cpp">
+    <ClCompile Include="Source\DepthStencilView.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\RenderTargetView.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>

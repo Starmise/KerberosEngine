@@ -12,7 +12,7 @@ public:
   DepthStencilView() = default;
   ~DepthStencilView() = default;
 
-  void
+  HRESULT
   init(Device& device, Texture& depthStencil, DXGI_FORMAT format);
 
   void
@@ -24,6 +24,6 @@ public:
   void
   destroy();
 
-private:
+public:
   ID3D11DepthStencilView* m_depthStencilView = nullptr;
 };

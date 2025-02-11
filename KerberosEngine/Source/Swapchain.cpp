@@ -4,7 +4,8 @@
 #include "Window.h"
 #include "Texture.h"
 
-HRESULT SwapChain::init(Device& device,
+HRESULT 
+SwapChain::init(Device& device,
                 DeviceContext& deviceContext,
                 Texture& backBuffer,
                 Window window) {
@@ -96,6 +97,7 @@ HRESULT SwapChain::init(Device& device,
     return hr;
   }
 
+  // Puente entre el Adaptador y el factory
   hr = m_dxgiAdapter->GetParent(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&m_dxgiFactory));
   if (FAILED(hr)) {
     ERROR("SwapChain", "init", "Failed to get DXGI Factory");
@@ -119,20 +121,24 @@ HRESULT SwapChain::init(Device& device,
   return S_OK;
 }
 
-void SwapChain::update() {
+void 
+SwapChain::update() {
 }
 
-void SwapChain::render() {
+void 
+SwapChain::render() {
 }
 
-void SwapChain::destroy() {
+void 
+SwapChain::destroy() {
   SAFE_RELEASE(g_pSwapChain);
   SAFE_RELEASE(m_dxgiFactory);
   SAFE_RELEASE(m_dxgiAdapter);
   SAFE_RELEASE(m_dxgiDevice);
 }
 
-void SwapChain::present() {
+void 
+SwapChain::present() {
   if (g_pSwapChain) {
     HRESULT hr = g_pSwapChain->Present(0, 0);
     if (FAILED(hr)) {
