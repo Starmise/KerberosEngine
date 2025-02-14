@@ -27,7 +27,10 @@ RenderTargetView::init(Device& device, Texture& backBuffer, DXGI_FORMAT format) 
 
 	if (FAILED(hr)) {
 		ERROR("RenderTargetView", "CreateRenderTargetView", "Failed to create Render Target View.");
+    return hr;
 	}
+
+  return S_OK;
 }
 
 void 

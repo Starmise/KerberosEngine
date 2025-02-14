@@ -7,14 +7,23 @@ class DeviceContext;
 class 
 Texture {
 public:
+  /**
+   * @brief Default constructor and destructor.
+   */
   Texture() = default;
   ~Texture() = default;
 
+  /**
+   * @brief Initializes a texture from a file.
+   */
   HRESULT
   init(Device device,
       const std::string& textureName,
       ExtensionType extensionType);
 
+  /**
+   * @brief Initializes a texture with specified parameters.
+   */
   HRESULT
   init(Device device,
       unsigned int width,
@@ -24,14 +33,23 @@ public:
       unsigned int sampleCount = 1,
       unsigned int qualityLevels = 0);
 
+  /**
+   * @brief Updates the texture data.
+   */
   void
   update();
 
+  /**
+   * @brief Renders the texture using the specified device context.
+   */
   void
   render(DeviceContext& deviceContet, 
         unsigned int StartSlot, 
         unsigned int NumViews);
 
+  /**
+  * @brief Releases texture resources and cleans up memory.
+  */
   void
   destroy();
 

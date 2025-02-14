@@ -24,7 +24,10 @@ DepthStencilView::init(Device& device, Texture& depthStencil, DXGI_FORMAT format
 
   if (FAILED(hr)) {
     ERROR("DepthStencilView", "CreateDepthStencilView", "Failed to create Depth Stencil View.");
+    return hr;
   }
+
+  return S_OK;
 }
 
 void
