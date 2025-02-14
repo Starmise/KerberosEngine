@@ -1,6 +1,11 @@
 #include "DeviceContext.h"
 
 void 
+DeviceContext::destroy() {
+  SAFE_RELEASE(m_deviceContext);
+}
+
+void
 DeviceContext::OMSetRenderTargets(unsigned int NumViews, 
                                   ID3D11RenderTargetView* const* ppRenderTargetViews, 
                                   ID3D11DepthStencilView* pDepthStencilView) {

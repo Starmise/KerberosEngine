@@ -41,7 +41,7 @@ void
 RenderTargetView::render(DeviceContext& deviceContext, 
                         DepthStencilView& depthStencilView, 
                         unsigned int numOfViews, 
-                        float clearColor[4]) {
+                        const float clearColor[4]) {
   if (!deviceContext.m_deviceContext) {
     ERROR("RenderTargetView", "render", "DeviceContext is nullptr in RenderTargetView render method");
   }

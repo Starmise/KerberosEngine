@@ -35,7 +35,7 @@ public:
   render(DeviceContext& deviceContext, 
         DepthStencilView& depthStencilView, 
         unsigned int numOfViews, 
-        float clearColor[4]);
+        const float clearColor[4]);
 
   /**
    * @brief Releases the resources associated with the render target view.

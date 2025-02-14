@@ -21,8 +21,8 @@ Texture                             g_depthStencil;
 RenderTargetView                    g_renderTargetView;
 DepthStencilView                    g_depthStencilView;
 
-D3D_DRIVER_TYPE                     g_driverType = D3D_DRIVER_TYPE_NULL;
-D3D_FEATURE_LEVEL                   g_featureLevel = D3D_FEATURE_LEVEL_11_0;
+//D3D_DRIVER_TYPE                     g_driverType = D3D_DRIVER_TYPE_NULL;
+//D3D_FEATURE_LEVEL                   g_featureLevel = D3D_FEATURE_LEVEL_11_0;
 //ID3D11Device* g_pd3dDevice = NULL;
 // ID3D11DeviceContext* g_pImmediateContext = NULL;
 // IDXGISwapChain* g_pSwapChain = NULL;
@@ -57,7 +57,7 @@ unsigned int offset = 0;
 //HRESULT InitWindow(HINSTANCE hInstance, int nCmdShow);
 HRESULT InitDevice();
 void CleanupDevice();
-LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+LRESULT CALLBACK    WndProc(HWND, unsigned int, WPARAM, LPARAM);
 void update();
 void Render();
 
@@ -90,6 +90,7 @@ wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
     }
     else
     {
+      update();
       Render();
     }
   }
@@ -208,14 +209,12 @@ InitDevice() {
   }
     
   // Setup the viewport
-  D3D11_VIEWPORT vp;
   vp.Width = (FLOAT)g_window.m_width;
   vp.Height = (FLOAT)g_window.m_height;
   vp.MinDepth = 0.0f;
   vp.MaxDepth = 1.0f;
   vp.TopLeftX = 0;
   vp.TopLeftY = 0;
-  g_deviceContext.m_deviceContext->RSSetViewports(1, &vp);
 
   // Compile the vertex shader
   ID3DBlob* pVSBlob = NULL;
@@ -249,10 +248,7 @@ InitDevice() {
   pVSBlob->Release();
   if (FAILED(hr))
     return hr;
-
-  // Set the input layout
-  g_deviceContext.m_deviceContext->IASetInputLayout(g_pVertexLayout);
-
+  
   // Compile the pixel shader
   ID3DBlob* pPSBlob = NULL;
   hr = CompileShaderFromFile("KerberosEngine.fx", "PS", "ps_4_0", &pPSBlob);
@@ -316,11 +312,6 @@ InitDevice() {
   if (FAILED(hr))
     return hr;
 
-  // Set vertex buffer
-  UINT stride = sizeof(SimpleVertex);
-  UINT offset = 0;
-  g_deviceContext.m_deviceContext->IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
-
   // Create index buffer
   // Create vertex buffer
   WORD indices[] =
@@ -352,12 +343,6 @@ InitDevice() {
   hr = g_device.CreateBuffer(&bd, &InitData, &g_pIndexBuffer);
   if (FAILED(hr))
     return hr;
-
-  // Set index buffer
-  g_deviceContext.m_deviceContext->IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
-
-  // Set primitive topology
-  g_deviceContext.m_deviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
   // Create the constant buffers
   bd.Usage = D3D11_USAGE_DEFAULT;
@@ -406,17 +391,6 @@ InitDevice() {
   XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
   g_View = XMMatrixLookAtLH(Eye, At, Up);
 
-  CBNeverChanges cbNeverChanges;
-  cbNeverChanges.mView = XMMatrixTranspose(g_View);
-  g_deviceContext.m_deviceContext->UpdateSubresource(g_pCBNeverChanges, 0, NULL, &cbNeverChanges, 0, 0);
-
-  // Initialize the projection matrix
-  g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, g_window.m_width / (FLOAT)g_window.m_height, 0.01f, 100.0f);
-
-  CBChangeOnResize cbChangesOnResize;
-  cbChangesOnResize.mProjection = XMMatrixTranspose(g_Projection);
-  g_deviceContext.m_deviceContext->UpdateSubresource(g_pCBChangeOnResize, 0, NULL, &cbChangesOnResize, 0, 0);
-
   return S_OK;
 }
 
@@ -437,12 +411,13 @@ CleanupDevice() {
   if (g_pVertexLayout) g_pVertexLayout->Release();
   if (g_pVertexShader) g_pVertexShader->Release();
   if (g_pPixelShader) g_pPixelShader->Release();
-  if (g_depthStencil.m_texture) g_depthStencil.destroy();
-	if (g_depthStencilView.m_depthStencilView) g_depthStencilView.destroy();
-	if (g_renderTargetView.m_renderTargetView) g_renderTargetView.destroy();
+  
+  g_depthStencil.destroy();
+  g_depthStencilView.destroy();
+  g_renderTargetView.destroy();
   g_swapchain.destroy();
-  if (g_deviceContext.m_deviceContext) g_deviceContext.m_deviceContext->Release();
-  if (g_device.m_device) g_device.m_device->Release();
+  g_deviceContext.destroy();
+  g_device.destroy();
 }
 
 
@@ -461,6 +436,84 @@ WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
     EndPaint(hWnd, &ps);
     break;
 
+  case WM_SIZE:
+    if (g_swapchain.g_pSwapChain) {
+      g_window.m_width = LOWORD(lParam);
+      g_window.m_height = HIWORD(lParam);
+
+      // Libera los recursos existentes
+      g_renderTargetView.destroy();
+      g_depthStencilView.destroy();
+      g_depthStencil.destroy();
+      g_backBuffer.destroy();
+
+      // Redimensionar el swap chain
+      HRESULT hr = g_swapchain.g_pSwapChain->ResizeBuffers(0,
+        g_window.m_width,
+        g_window.m_height,
+        DXGI_FORMAT_R8G8B8A8_UNORM,
+        0);
+      if (FAILED(hr)) {
+        MessageBox(hWnd, "Failed to resize swap chain buffers.", "Error", MB_OK);
+        PostQuitMessage(0);
+      }
+
+      // **3. RECREAR EL BACK BUFFER**
+      hr = g_swapchain.g_pSwapChain->GetBuffer(0,
+        __uuidof(ID3D11Texture2D),
+        reinterpret_cast<void**>(&g_backBuffer.m_texture));
+      if (FAILED(hr)) {
+        ERROR("SwapChain", "Resize", "Failed to get new back buffer");
+        return hr;
+      }
+
+      // **4. RECREAR EL RENDER TARGET VIEW**
+      hr = g_renderTargetView.init(g_device,
+        g_backBuffer,
+        DXGI_FORMAT_R8G8B8A8_UNORM);
+      if (FAILED(hr)) {
+        ERROR("RenderTargetView", "Resize", "Failed to create new RenderTargetView");
+        return hr;
+      }
+
+      // **5. RECREAR EL DEPTH STENCIL VIEW**
+      hr = g_depthStencil.init(g_device,
+        g_window.m_width,
+        g_window.m_height,
+        DXGI_FORMAT_D24_UNORM_S8_UINT,
+        D3D11_BIND_DEPTH_STENCIL,
+        4,
+        0);
+      if (FAILED(hr)) {
+        ERROR("DepthStencil", "Resize", "Failed to create new DepthStencil");
+        return hr;
+      }
+
+      hr = g_depthStencilView.init(g_device,
+        g_depthStencil,
+        DXGI_FORMAT_D24_UNORM_S8_UINT);
+      if (FAILED(hr)) {
+        ERROR("DepthStencilView", "Resize", "Failed to create new DepthStencilView");
+        return hr;
+      }
+      // Actualizar el viewport
+      //D3D11_VIEWPORT vp;
+      vp.Width = static_cast<float>(g_window.m_width);
+      vp.Height = static_cast<float>(g_window.m_height);
+      vp.MinDepth = 0.0f;
+      vp.MaxDepth = 1.0f;
+      vp.TopLeftX = 0;
+      vp.TopLeftY = 0;
+      g_deviceContext.RSSetViewports(1, &vp);
+
+      // Actualizar la proyección
+      g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, g_window.m_width / (float)g_window.m_height, 0.01f, 100.0f);
+      CBChangeOnResize cbChangesOnResize;
+      cbChangesOnResize.mProjection = XMMatrixTranspose(g_Projection);
+      g_deviceContext.UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangesOnResize, 0, 0);
+    }
+    break;
+
   case WM_DESTROY:
     PostQuitMessage(0);
     break;
@@ -472,15 +525,14 @@ WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
   return 0;
 }
 
-
 //--------------------------------------------------------------------------------------
-// Render a frame
+// Update frame-specific variables
 //--------------------------------------------------------------------------------------
-void
-Render() {
+void 
+update() {
   // Update our time
   static float t = 0.0f;
-  if (g_driverType == D3D_DRIVER_TYPE_REFERENCE)
+  if (g_swapchain.m_driverType == D3D_DRIVER_TYPE_REFERENCE)
   {
     t += (float)XM_PI * 0.0125f;
   }
@@ -501,11 +553,41 @@ Render() {
   g_vMeshColor.y = (cosf(t * 3.0f) + 1.0f) * 0.5f;
   g_vMeshColor.z = (sinf(t * 5.0f) + 1.0f) * 0.5f;
 
+
+  //
+  // Update variables that change once per frame
+  //
+  CBChangesEveryFrame cb;
+  cb.mWorld = XMMatrixTranspose(g_World);
+  cb.vMeshColor = g_vMeshColor;
+  g_deviceContext.m_deviceContext->UpdateSubresource(g_pCBChangesEveryFrame, 0, NULL, &cb, 0, 0);
+
+
+  // Initialize the projection matrix
+  g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, g_window.m_width / (float)g_window.m_height, 0.01f, 100.0f);
+
+  cbNeverChanges.mView = XMMatrixTranspose(g_View);
+  g_deviceContext.UpdateSubresource(g_pCBNeverChanges, 0, nullptr, &cbNeverChanges, 0, 0);
+
+  cbChangesOnResize.mProjection = XMMatrixTranspose(g_Projection);
+  g_deviceContext.UpdateSubresource(g_pCBChangeOnResize, 0, nullptr, &cbChangesOnResize, 0, 0);
+}
+
+
+//--------------------------------------------------------------------------------------
+// Render a frame
+//--------------------------------------------------------------------------------------
+void
+Render() {
+
   //
   // Clear the back buffer
   //
   float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // red, green, blue, alpha
   
+  // Set Viewport
+	g_deviceContext.RSSetViewports(1, &vp);
+
   //
   // Set Render Target View
   //
@@ -517,16 +599,14 @@ Render() {
   g_depthStencilView.render(g_deviceContext);
 
   //
-  // Update variables that change once per frame
-  //
-  CBChangesEveryFrame cb;
-  cb.mWorld = XMMatrixTranspose(g_World);
-  cb.vMeshColor = g_vMeshColor;
-  g_deviceContext.m_deviceContext->UpdateSubresource(g_pCBChangesEveryFrame, 0, NULL, &cb, 0, 0);
-
-  //
   // Render the cube
   //
+  // Set Buffers and Shaders for pipeline
+  g_deviceContext.IASetInputLayout(g_pVertexLayout);
+  g_deviceContext.IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
+  g_deviceContext.IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
+  g_deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  // Set Constant Buffers and asign Shaders
   g_deviceContext.m_deviceContext->VSSetShader(g_pVertexShader, NULL, 0);
   g_deviceContext.m_deviceContext->VSSetConstantBuffers(0, 1, &g_pCBNeverChanges);
   g_deviceContext.m_deviceContext->VSSetConstantBuffers(1, 1, &g_pCBChangeOnResize);
@@ -535,6 +615,7 @@ Render() {
   g_deviceContext.m_deviceContext->PSSetConstantBuffers(2, 1, &g_pCBChangesEveryFrame);
   g_deviceContext.m_deviceContext->PSSetShaderResources(0, 1, &g_pTextureRV);
   g_deviceContext.m_deviceContext->PSSetSamplers(0, 1, &g_pSamplerLinear);
+  
   g_deviceContext.m_deviceContext->DrawIndexed(36, 0, 0);
 
   //
