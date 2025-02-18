@@ -6,6 +6,8 @@
 #include "Texture.h"
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
+#include "Viewport.h"
+#include "InputLayout.h"
 
 //--------------------------------------------------------------------------------------
 // Global Variables
@@ -20,6 +22,8 @@ Texture                             g_backBuffer;
 Texture                             g_depthStencil;
 RenderTargetView                    g_renderTargetView;
 DepthStencilView                    g_depthStencilView;
+Viewport                            g_viewport;
+InputLayout                         g_inputLayout;
 
 //D3D_DRIVER_TYPE                     g_driverType = D3D_DRIVER_TYPE_NULL;
 //D3D_FEATURE_LEVEL                   g_featureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -31,7 +35,7 @@ DepthStencilView                    g_depthStencilView;
 // ID3D11DepthStencilView* g_pDepthStencilView = NULL;
 ID3D11VertexShader* g_pVertexShader = NULL;
 ID3D11PixelShader* g_pPixelShader = NULL;
-ID3D11InputLayout* g_pVertexLayout = NULL;
+// ID3D11InputLayout* g_pVertexLayout = NULL;
 ID3D11Buffer* g_pVertexBuffer = NULL;
 ID3D11Buffer* g_pIndexBuffer = NULL;
 ID3D11Buffer* g_pCBNeverChanges = NULL;
@@ -47,7 +51,7 @@ XMFLOAT4                            g_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
 CBChangesEveryFrame cb;
 CBNeverChanges cbNeverChanges;
 CBChangeOnResize cbChangesOnResize;
-D3D11_VIEWPORT vp;
+// D3D11_VIEWPORT vp;
 unsigned int stride = sizeof(SimpleVertex);
 unsigned int offset = 0;
 
@@ -99,43 +103,6 @@ wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
 
   return (int)msg.wParam;
 }
-
-////--------------------------------------------------------------------------------------
-//// Register class and create window
-////--------------------------------------------------------------------------------------
-//HRESULT
-//InitWindow(HINSTANCE hInstance, int nCmdShow) {
-//  // Register class
-//  WNDCLASSEX wcex;
-//  wcex.cbSize = sizeof(WNDCLASSEX);
-//  wcex.style = CS_HREDRAW | CS_VREDRAW;
-//  wcex.lpfnWndProc = WndProc;
-//  wcex.cbClsExtra = 0;
-//  wcex.cbWndExtra = 0;
-//  wcex.hInstance = hInstance;
-//  wcex.hIcon = LoadIcon(hInstance, (LPCTSTR)IDI_TUTORIAL1);
-//  wcex.hCursor = LoadCursor(NULL, IDC_ARROW);
-//  wcex.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-//  wcex.lpszMenuName = NULL;
-//  wcex.lpszClassName = "TutorialWindowClass";
-//  wcex.hIconSm = LoadIcon(wcex.hInstance, (LPCTSTR)IDI_TUTORIAL1);
-//  if (!RegisterClassEx(&wcex))
-//    return E_FAIL;
-//
-//  // Create window
-//  g_hInst = hInstance;
-//  RECT rc = { 0, 0, 640, 480 };
-//  AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-//  g_hWnd = CreateWindow("TutorialWindowClass", "Kerberos Engine", WS_OVERLAPPEDWINDOW,
-//    CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, NULL, NULL, hInstance,
-//    NULL);
-//  if (!g_hWnd)
-//    return E_FAIL;
-//
-//  ShowWindow(g_hWnd, nCmdShow);
-//
-//  return S_OK;
-//}
 
 //--------------------------------------------------------------------------------------
 // Helper for compiling shaders with D3DX11
@@ -209,12 +176,7 @@ InitDevice() {
   }
     
   // Setup the viewport
-  vp.Width = (FLOAT)g_window.m_width;
-  vp.Height = (FLOAT)g_window.m_height;
-  vp.MinDepth = 0.0f;
-  vp.MaxDepth = 1.0f;
-  vp.TopLeftX = 0;
-  vp.TopLeftY = 0;
+  g_viewport.init(g_window);
 
   // Compile the vertex shader
   ID3DBlob* pVSBlob = NULL;
@@ -235,19 +197,36 @@ InitDevice() {
   }
 
   // Define the input layout
-  D3D11_INPUT_ELEMENT_DESC layout[] =
+ /* D3D11_INPUT_ELEMENT_DESC layout[] =
   {
       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
       { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
   };
-  UINT numElements = ARRAYSIZE(layout);
+  UINT numElements = ARRAYSIZE(layout);*/
+  std::vector<D3D11_INPUT_ELEMENT_DESC> Layout;
+
+  D3D11_INPUT_ELEMENT_DESC position;
+  position.SemanticName = "POSITION";
+  position.SemanticIndex = 0;
+  position.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+  position.InputSlot = 0;
+  position.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT /*0*/;
+  position.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+  position.InstanceDataStepRate = 0;
+  Layout.push_back(position);
+
+  D3D11_INPUT_ELEMENT_DESC texcoord;
+  texcoord.SemanticName = "TEXCOORD";
+  texcoord.SemanticIndex = 0;
+  texcoord.Format = DXGI_FORMAT_R32G32_FLOAT;
+  texcoord.InputSlot = 0;
+  texcoord.AlignedByteOffset = D3D11_APPEND_ALIGNED_ELEMENT /*12*/;
+  texcoord.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+  texcoord.InstanceDataStepRate = 0;
+  Layout.push_back(texcoord);
 
   // Create the input layout
-  hr = g_device.CreateInputLayout(layout, numElements, pVSBlob->GetBufferPointer(),
-    pVSBlob->GetBufferSize(), &g_pVertexLayout);
-  pVSBlob->Release();
-  if (FAILED(hr))
-    return hr;
+  g_inputLayout.init(g_device, Layout, pVSBlob);
   
   // Compile the pixel shader
   ID3DBlob* pPSBlob = NULL;
@@ -408,10 +387,10 @@ CleanupDevice() {
   if (g_pCBChangesEveryFrame) g_pCBChangesEveryFrame->Release();
   if (g_pVertexBuffer) g_pVertexBuffer->Release();
   if (g_pIndexBuffer) g_pIndexBuffer->Release();
-  if (g_pVertexLayout) g_pVertexLayout->Release();
   if (g_pVertexShader) g_pVertexShader->Release();
   if (g_pPixelShader) g_pPixelShader->Release();
   
+  g_inputLayout.destroy();
   g_depthStencil.destroy();
   g_depthStencilView.destroy();
   g_renderTargetView.destroy();
@@ -498,13 +477,7 @@ WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam) {
       }
       // Actualizar el viewport
       //D3D11_VIEWPORT vp;
-      vp.Width = static_cast<float>(g_window.m_width);
-      vp.Height = static_cast<float>(g_window.m_height);
-      vp.MinDepth = 0.0f;
-      vp.MaxDepth = 1.0f;
-      vp.TopLeftX = 0;
-      vp.TopLeftY = 0;
-      g_deviceContext.RSSetViewports(1, &vp);
+      g_viewport.init(g_window);
 
       // Actualizar la proyección
       g_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, g_window.m_width / (float)g_window.m_height, 0.01f, 100.0f);
@@ -586,7 +559,7 @@ Render() {
   float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; // red, green, blue, alpha
   
   // Set Viewport
-	g_deviceContext.RSSetViewports(1, &vp);
+  g_viewport.render(g_deviceContext);
 
   //
   // Set Render Target View
@@ -602,7 +575,7 @@ Render() {
   // Render the cube
   //
   // Set Buffers and Shaders for pipeline
-  g_deviceContext.IASetInputLayout(g_pVertexLayout);
+  g_inputLayout.render(g_deviceContext);
   g_deviceContext.IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
   g_deviceContext.IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
   g_deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
