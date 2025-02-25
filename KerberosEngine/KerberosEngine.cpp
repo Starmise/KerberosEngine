@@ -7,7 +7,8 @@
 #include "RenderTargetView.h"
 #include "DepthStencilView.h"
 #include "Viewport.h"
-#include "InputLayout.h"
+// #include "InputLayout.h"
+#include "ShaderProgram.h"
 
 //--------------------------------------------------------------------------------------
 // Global Variables
@@ -23,7 +24,8 @@ Texture                             g_depthStencil;
 RenderTargetView                    g_renderTargetView;
 DepthStencilView                    g_depthStencilView;
 Viewport                            g_viewport;
-InputLayout                         g_inputLayout;
+// InputLayout                         g_inputLayout;
+ShaderProgram                       g_shaderProgram;
 
 //D3D_DRIVER_TYPE                     g_driverType = D3D_DRIVER_TYPE_NULL;
 //D3D_FEATURE_LEVEL                   g_featureLevel = D3D_FEATURE_LEVEL_11_0;
@@ -33,8 +35,8 @@ InputLayout                         g_inputLayout;
 // ID3D11RenderTargetView* g_pRenderTargetView = NULL;
 // ID3D11Texture2D* g_pDepthStencil = NULL;
 // ID3D11DepthStencilView* g_pDepthStencilView = NULL;
-ID3D11VertexShader* g_pVertexShader = NULL;
-ID3D11PixelShader* g_pPixelShader = NULL;
+// ID3D11VertexShader* g_pVertexShader = NULL;
+// ID3D11PixelShader* g_pPixelShader = NULL;
 // ID3D11InputLayout* g_pVertexLayout = NULL;
 ID3D11Buffer* g_pVertexBuffer = NULL;
 ID3D11Buffer* g_pIndexBuffer = NULL;
@@ -107,33 +109,33 @@ wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nCm
 //--------------------------------------------------------------------------------------
 // Helper for compiling shaders with D3DX11
 //--------------------------------------------------------------------------------------
-HRESULT
-CompileShaderFromFile(char* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut) {
-  HRESULT hr = S_OK;
-
-  DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
-#if defined( DEBUG ) || defined( _DEBUG )
-  // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
-  // Setting this flag improves the shader debugging experience, but still allows 
-  // the shaders to be optimized and to run exactly the way they will run in 
-  // the release configuration of this program.
-  dwShaderFlags |= D3DCOMPILE_DEBUG;
-#endif
-
-  ID3DBlob* pErrorBlob;
-  hr = D3DX11CompileFromFile(szFileName, NULL, NULL, szEntryPoint, szShaderModel,
-    dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
-  if (FAILED(hr))
-  {
-    if (pErrorBlob != NULL)
-      OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
-    if (pErrorBlob) pErrorBlob->Release();
-    return hr;
-  }
-  if (pErrorBlob) pErrorBlob->Release();
-
-  return S_OK;
-}
+//HRESULT
+//CompileShaderFromFile(char* szFileName, LPCSTR szEntryPoint, LPCSTR szShaderModel, ID3DBlob** ppBlobOut) {
+//  HRESULT hr = S_OK;
+//
+//  DWORD dwShaderFlags = D3DCOMPILE_ENABLE_STRICTNESS;
+//#if defined( DEBUG ) || defined( _DEBUG )
+//  // Set the D3DCOMPILE_DEBUG flag to embed debug information in the shaders.
+//  // Setting this flag improves the shader debugging experience, but still allows 
+//  // the shaders to be optimized and to run exactly the way they will run in 
+//  // the release configuration of this program.
+//  dwShaderFlags |= D3DCOMPILE_DEBUG;
+//#endif
+//
+//  ID3DBlob* pErrorBlob;
+//  hr = D3DX11CompileFromFile(szFileName, NULL, NULL, szEntryPoint, szShaderModel,
+//    dwShaderFlags, 0, NULL, ppBlobOut, &pErrorBlob, NULL);
+//  if (FAILED(hr))
+//  {
+//    if (pErrorBlob != NULL)
+//      OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
+//    if (pErrorBlob) pErrorBlob->Release();
+//    return hr;
+//  }
+//  if (pErrorBlob) pErrorBlob->Release();
+//
+//  return S_OK;
+//}
 
 
 //--------------------------------------------------------------------------------------
@@ -178,31 +180,25 @@ InitDevice() {
   // Setup the viewport
   g_viewport.init(g_window);
 
-  // Compile the vertex shader
-  ID3DBlob* pVSBlob = NULL;
-  hr = CompileShaderFromFile("KerberosEngine.fx", "VS", "vs_4_0", &pVSBlob);
-  if (FAILED(hr))
-  {
-    MessageBox(NULL,
-      "The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", "Error", MB_OK);
-    return hr;
-  }
+  //// Compile the vertex shader
+  //ID3DBlob* pVSBlob = NULL;
+  //hr = CompileShaderFromFile("KerberosEngine.fx", "VS", "vs_4_0", &pVSBlob);
+  //if (FAILED(hr))
+  //{
+  //  MessageBox(NULL,
+  //    "The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", "Error", MB_OK);
+  //  return hr;
+  //}
 
-  // Create the vertex shader
-  hr = g_device.CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &g_pVertexShader);
-  if (FAILED(hr))
-  {
-    pVSBlob->Release();
-    return hr;
-  }
+  //// Create the vertex shader
+  //hr = g_device.CreateVertexShader(pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), NULL, &g_pVertexShader);
+  //if (FAILED(hr))
+  //{
+  //  pVSBlob->Release();
+  //  return hr;
+  //}
 
   // Define the input layout
- /* D3D11_INPUT_ELEMENT_DESC layout[] =
-  {
-      { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-  };
-  UINT numElements = ARRAYSIZE(layout);*/
   std::vector<D3D11_INPUT_ELEMENT_DESC> Layout;
 
   D3D11_INPUT_ELEMENT_DESC position;
@@ -225,24 +221,27 @@ InitDevice() {
   texcoord.InstanceDataStepRate = 0;
   Layout.push_back(texcoord);
 
-  // Create the input layout
-  g_inputLayout.init(g_device, Layout, pVSBlob);
-  
-  // Compile the pixel shader
-  ID3DBlob* pPSBlob = NULL;
-  hr = CompileShaderFromFile("KerberosEngine.fx", "PS", "ps_4_0", &pPSBlob);
-  if (FAILED(hr))
-  {
-    MessageBox(NULL,
-      "The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", "Error", MB_OK);
+  // Create the Shader Program
+  hr = g_shaderProgram.init(g_device, "KerberosEngine.fx", Layout);
+  if (FAILED(hr)) {
     return hr;
   }
+  
+  //// Compile the pixel shader
+  //ID3DBlob* pPSBlob = NULL;
+  //hr = CompileShaderFromFile("KerberosEngine.fx", "PS", "ps_4_0", &pPSBlob);
+  //if (FAILED(hr))
+  //{
+  //  MessageBox(NULL,
+  //    "The FX file cannot be compiled.  Please run this executable from the directory that contains the FX file.", "Error", MB_OK);
+  //  return hr;
+  //}
 
-  // Create the pixel shader
-  hr = g_device.CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_pPixelShader);
-  pPSBlob->Release();
-  if (FAILED(hr))
-    return hr;
+  //// Create the pixel shader
+  //hr = g_device.CreatePixelShader(pPSBlob->GetBufferPointer(), pPSBlob->GetBufferSize(), NULL, &g_pPixelShader);
+  //pPSBlob->Release();
+  //if (FAILED(hr))
+  //  return hr;
 
   // Create vertex buffer
   SimpleVertex vertices[] =
@@ -387,10 +386,8 @@ CleanupDevice() {
   if (g_pCBChangesEveryFrame) g_pCBChangesEveryFrame->Release();
   if (g_pVertexBuffer) g_pVertexBuffer->Release();
   if (g_pIndexBuffer) g_pIndexBuffer->Release();
-  if (g_pVertexShader) g_pVertexShader->Release();
-  if (g_pPixelShader) g_pPixelShader->Release();
   
-  g_inputLayout.destroy();
+  g_shaderProgram.destroy();
   g_depthStencil.destroy();
   g_depthStencilView.destroy();
   g_renderTargetView.destroy();
@@ -575,21 +572,24 @@ Render() {
   // Render the cube
   //
   // Set Buffers and Shaders for pipeline
-  g_inputLayout.render(g_deviceContext);
+  g_shaderProgram.render(g_deviceContext);
   g_deviceContext.IASetVertexBuffers(0, 1, &g_pVertexBuffer, &stride, &offset);
   g_deviceContext.IASetIndexBuffer(g_pIndexBuffer, DXGI_FORMAT_R16_UINT, 0);
   g_deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-  // Set Constant Buffers and asign Shaders
-  g_deviceContext.m_deviceContext->VSSetShader(g_pVertexShader, NULL, 0);
-  g_deviceContext.m_deviceContext->VSSetConstantBuffers(0, 1, &g_pCBNeverChanges);
-  g_deviceContext.m_deviceContext->VSSetConstantBuffers(1, 1, &g_pCBChangeOnResize);
-  g_deviceContext.m_deviceContext->VSSetConstantBuffers(2, 1, &g_pCBChangesEveryFrame);
-  g_deviceContext.m_deviceContext->PSSetShader(g_pPixelShader, NULL, 0);
-  g_deviceContext.m_deviceContext->PSSetConstantBuffers(2, 1, &g_pCBChangesEveryFrame);
-  g_deviceContext.m_deviceContext->PSSetShaderResources(0, 1, &g_pTextureRV);
-  g_deviceContext.m_deviceContext->PSSetSamplers(0, 1, &g_pSamplerLinear);
   
-  g_deviceContext.m_deviceContext->DrawIndexed(36, 0, 0);
+  // Set Constant Buffers and asign Shaders
+  // g_deviceContext.m_deviceContext->VSSetShader(g_pVertexShader, NULL, 0);
+  g_deviceContext.VSSetConstantBuffers(0, 1, &g_pCBNeverChanges);
+  g_deviceContext.VSSetConstantBuffers(1, 1, &g_pCBChangeOnResize);
+  g_deviceContext.VSSetConstantBuffers(2, 1, &g_pCBChangesEveryFrame);
+ 
+  // g_deviceContext.m_deviceContext->PSSetShader(g_pPixelShader, NULL, 0);
+  g_deviceContext.PSSetConstantBuffers(2, 1, &g_pCBChangesEveryFrame);
+  g_deviceContext.PSSetShaderResources(0, 1, &g_pTextureRV);
+  g_deviceContext.PSSetSamplers(0, 1, &g_pSamplerLinear);
+  
+  // Drwa
+  g_deviceContext.DrawIndexed(36, 0, 0);
 
   //
   // Present our back buffer to our front buffer

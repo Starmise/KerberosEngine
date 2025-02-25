@@ -66,3 +66,10 @@ enum
   PNG = 1,
   JPG = 2
 };
+
+enum
+  ShaderType {
+  VERTEX_SHADER = 0,
+  PIXEL_SHADER = 1
+};
+
