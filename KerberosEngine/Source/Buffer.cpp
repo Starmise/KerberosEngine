@@ -4,6 +4,24 @@
 #include "MeshComponent.h"
 
 HRESULT
+Buffer::createBuffer(Device& device,
+                     D3D11_BUFFER_DESC& desc,
+                     D3D11_SUBRESOURCE_DATA* initData) {
+  if (!device.m_device) {
+    ERROR("Buffer", "createBuffer", "Device is nullptr");
+    return E_POINTER;
+  }
+
+  HRESULT hr = device.CreateBuffer(&desc, initData, &m_buffer);
+  if (FAILED(hr)) {
+    ERROR("Buffer", "createBuffer", "Failed to create buffer");
+    return hr;
+  }
+
+  return S_OK;
+}
+
+HRESULT
 Buffer::init(Device& device, MeshComponent& mesh, unsigned int bindFlag) {
   if (!device.m_device) {
     ERROR("Buffer", "init", "Device is nullptr");
@@ -35,6 +53,8 @@ Buffer::init(Device& device, MeshComponent& mesh, unsigned int bindFlag) {
       desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
       InitData.pSysMem = mesh.m_index.data();
   }
+
+  return createBuffer(device, desc, &InitData);
 }
 
 HRESULT
@@ -73,9 +93,9 @@ Buffer::update(DeviceContext& deviceContext,
 void
 Buffer::render(DeviceContext& deviceContext, 
                unsigned int StarSlot, 
-               unsigned int NumBuffers, 
-               DXGI_FORMAT format, 
-               bool setPixelShader) {
+               unsigned int NumBuffers,
+               bool setPixelShader,
+               DXGI_FORMAT format) {
   if (!m_buffer) {
     ERROR("Buffer", "render", "Buffer is nullptr");
     return;
@@ -87,7 +107,7 @@ Buffer::render(DeviceContext& deviceContext,
     break; 
   
   case D3D11_BIND_CONSTANT_BUFFER:
-    deviceContext.PSSetConstantBuffers(StarSlot, NumBuffers, &m_buffer);
+    deviceContext.VSSetConstantBuffers(StarSlot, NumBuffers, &m_buffer);
     if (setPixelShader) {
       deviceContext.PSSetConstantBuffers(StarSlot, NumBuffers, &m_buffer);
     }
@@ -106,22 +126,4 @@ Buffer::render(DeviceContext& deviceContext,
 void
 Buffer::destroy() {
   SAFE_RELEASE(m_buffer);
-}
-
-HRESULT
-Buffer::createBuffer(Device& device, 
-                     D3D11_BUFFER_DESC& desc, 
-                     D3D11_SUBRESOURCE_DATA* initData) {
-  if (!device.m_device) {
-    ERROR("Buffer", "createBuffer", "Device is nullptr");
-    return E_POINTER;
-  }
-
-  HRESULT hr = device.CreateBuffer(&desc, initData, &m_buffer);
-  if (FAILED(hr)) {
-    ERROR("Buffer", "createBuffer", "Failed to create buffer");
-    return hr;
-  }
-
-  return S_OK;
 }
