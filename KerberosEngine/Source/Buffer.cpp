@@ -28,9 +28,13 @@ Buffer::init(Device& device, MeshComponent& mesh, unsigned int bindFlag) {
     return E_POINTER;
   }
 
-  if ((bindFlag == D3D11_BIND_VERTEX_BUFFER && mesh.m_vertex.empty()) ||
-    (bindFlag == D3D11_BIND_INDEX_BUFFER && mesh.m_index.empty())) {
-    ERROR("Buffer", "init", "Mesh data is empty");
+  if ((bindFlag & D3D11_BIND_VERTEX_BUFFER) && mesh.m_vertex.empty()) {
+    ERROR("Buffer", "init", "Vertex buffer is empty");
+    return E_INVALIDARG;
+  }
+
+  if ((bindFlag & D3D11_BIND_INDEX_BUFFER) && mesh.m_index.empty()) {
+    ERROR("Buffer", "init", "Index buffer is empty");
     return E_INVALIDARG;
   }
 
@@ -39,19 +43,19 @@ Buffer::init(Device& device, MeshComponent& mesh, unsigned int bindFlag) {
   
   desc.Usage = D3D11_USAGE_DEFAULT;
   desc.CPUAccessFlags = 0;
-  m_bindFlags = bindFlag;
+  m_bindFlag = bindFlag;
 
-  if (bindFlag == D3D11_BIND_VERTEX_BUFFER) {
-      m_stride = sizeof(SimpleVertex);
-      desc.ByteWidth = m_stride * static_cast<unsigned int>(mesh.m_vertex.size());
-      desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-      InitData.pSysMem = mesh.m_vertex.data();
+  if (bindFlag & D3D11_BIND_VERTEX_BUFFER) {
+    m_stride = sizeof(SimpleVertex);
+    desc.ByteWidth = m_stride * static_cast<unsigned int>(mesh.m_vertex.size());
+    desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+    InitData.pSysMem = mesh.m_vertex.data();
   }
-  else if (bindFlag == D3D11_BIND_INDEX_BUFFER) {
-      m_stride = sizeof(unsigned int);
-      desc.ByteWidth = m_stride * static_cast<unsigned int>(mesh.m_index.size());
-      desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-      InitData.pSysMem = mesh.m_index.data();
+  else if (bindFlag & D3D11_BIND_INDEX_BUFFER) {
+    m_stride = sizeof(unsigned int);
+    desc.ByteWidth = m_stride * static_cast<unsigned int>(mesh.m_index.size());
+    desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+    InitData.pSysMem = mesh.m_index.data();
   }
 
   return createBuffer(device, desc, &InitData);
@@ -70,7 +74,7 @@ Buffer::init(Device& device, unsigned int ByteWidth) {
   desc.Usage = D3D11_USAGE_DEFAULT;
   desc.ByteWidth = ByteWidth;
   desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-  m_bindFlags = desc.BindFlags;
+  m_bindFlag = desc.BindFlags;
 
   return createBuffer(device, desc, nullptr);
 }
@@ -92,7 +96,7 @@ Buffer::update(DeviceContext& deviceContext,
 
 void
 Buffer::render(DeviceContext& deviceContext, 
-               unsigned int StarSlot, 
+               unsigned int StartSlot, 
                unsigned int NumBuffers,
                bool setPixelShader,
                DXGI_FORMAT format) {
@@ -101,15 +105,15 @@ Buffer::render(DeviceContext& deviceContext,
     return;
   }
 
-  switch (m_bindFlags) {
+  switch (m_bindFlag) {
   case D3D11_BIND_VERTEX_BUFFER:
-    deviceContext.IASetVertexBuffers(StarSlot, NumBuffers, &m_buffer, &m_stride, &m_offset);
-    break; 
-  
+    deviceContext.IASetVertexBuffers(StartSlot, NumBuffers, &m_buffer, &m_stride, &m_offset);
+    break;
+
   case D3D11_BIND_CONSTANT_BUFFER:
-    deviceContext.VSSetConstantBuffers(StarSlot, NumBuffers, &m_buffer);
+    deviceContext.VSSetConstantBuffers(StartSlot, NumBuffers, &m_buffer);
     if (setPixelShader) {
-      deviceContext.PSSetConstantBuffers(StarSlot, NumBuffers, &m_buffer);
+      deviceContext.PSSetConstantBuffers(StartSlot, NumBuffers, &m_buffer);
     }
     break;
 

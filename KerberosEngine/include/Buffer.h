@@ -43,7 +43,7 @@ public:
    */
   void
   render(DeviceContext& deviceContext, 
-         unsigned int StarSlot, 
+         unsigned int StartSlot, 
          unsigned int NumBuffers,
          bool setPixelShader = false,
          DXGI_FORMAT format = DXGI_FORMAT_UNKNOWN
@@ -65,7 +65,7 @@ private:
                  D3D11_SUBRESOURCE_DATA* initData);
 
   ID3D11Buffer* m_buffer = nullptr;
-  unsigned int m_bindFlags = 0;
+  unsigned int m_bindFlag = 0;
   unsigned int m_stride = 0;
   unsigned int m_offset = 0;
 };
