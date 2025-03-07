@@ -1,9 +1,6 @@
 #include "BaseApp.h"
 
 XMFLOAT4                            m_vMeshColor(0.7f, 0.7f, 0.7f, 1.0f);
-CBChangesEveryFrame cb;
-CBNeverChanges cbNeverChanges;
-CBChangeOnResize cbChangesOnResize;
 
 HRESULT
 BaseApp::init() {
@@ -195,6 +192,10 @@ BaseApp::init() {
   // Initialize the world matrices
   m_World = XMMatrixIdentity();
 
+  scale.x = 1.0f;
+  scale.y = 1.0f;
+  scale.z = 1.0f;
+
   // Initialize the view matrix
   XMVECTOR Eye = XMVectorSet(0.0f, 3.0f, -6.0f, 0.0f);
   XMVECTOR At = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
@@ -212,8 +213,7 @@ BaseApp::update() {
   {
     t += (float)XM_PI * 0.0125f;
   }
-  else
-  {
+  else  {
     static DWORD dwTimeStart = 0;
     DWORD dwTimeCur = GetTickCount();
     if (dwTimeStart == 0)
@@ -221,14 +221,22 @@ BaseApp::update() {
     t = (dwTimeCur - dwTimeStart) / 1000.0f;
   }
 
-  // Rotate cube around the origin
-  m_World = XMMatrixRotationY(t);
+  m_vMeshColor = XMFLOAT4(
+    // Modify the color
+    m_vMeshColor.x = (sinf(t * 1.0f) + 1.0f) * 0.5f,
+    m_vMeshColor.y = (cosf(t * 3.0f) + 1.0f) * 0.5f,
+    m_vMeshColor.z = (sinf(t * 5.0f) + 1.0f) * 0.5f,
+    1.0f
+    );
 
-  // Modify the color
-  m_vMeshColor.x = (sinf(t * 1.0f) + 1.0f) * 0.5f;
-  m_vMeshColor.y = (cosf(t * 3.0f) + 1.0f) * 0.5f;
-  m_vMeshColor.z = (sinf(t * 5.0f) + 1.0f) * 0.5f;
+  // Update the rotation and color of the object
+  XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
+  XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
+  XMMATRIX traslationMatrix = XMMatrixTranslation(position.x, position.y, position.z);
 
+  // Compose the final matrix in the orden: scale -> rotation -> scale
+  m_World = scaleMatrix * rotationMatrix * traslationMatrix;
+  
   // Update variables that change once per frame
   cb.mWorld = XMMatrixTranspose(m_World);
   cb.vMeshColor = m_vMeshColor;
@@ -302,6 +310,83 @@ BaseApp::destroy() {
   m_device.destroy();
 }
 
+HRESULT 
+BaseApp::ResizeWindow(HWND hWnd, LPARAM lParam)
+{
+  // Validar que Swapchain exista
+  if (m_swapchain.g_pSwapChain) {
+    // Destruir los recursos anteriores del RTV, DS, DSV
+    m_renderTargetView.destroy();
+    m_depthStencil.destroy();
+    m_depthStencilView.destroy();
+    m_backBuffer.destroy();
+
+    // Redimensionar los datos del ancho y alto de la ventana
+    m_window.m_width = LOWORD(lParam);
+    m_window.m_height = HIWORD(lParam);
+
+    // Redimensionar el buffer del swapchain
+    HRESULT hr = m_swapchain.g_pSwapChain->ResizeBuffers(0,
+      m_window.m_width,
+      m_window.m_height,
+      DXGI_FORMAT_R8G8B8A8_UNORM,
+      0);
+    // Validación del HRESULT
+    if (FAILED(hr)) {
+      ERROR("ResizeWindow", "SwapChain", "Failed to resize buffers");
+      return hr;
+    }
+
+    // Recrear el backBuffer
+    hr = m_swapchain.g_pSwapChain->GetBuffer(0,
+      __uuidof(ID3D11Texture2D),
+      reinterpret_cast<void**>(&m_backBuffer.m_texture));
+    if (FAILED(hr)) {
+      ERROR("ResizeWindow", "ResizeWindow", "Failed to recreate back buffer");
+      return hr;
+    }
+
+    // Recrear el render target view
+    hr = m_renderTargetView.init(m_device,
+      m_backBuffer,
+      DXGI_FORMAT_R8G8B8A8_UNORM);
+    if (FAILED(hr)) {
+      ERROR("ResizeWindow", "Render Target View", "Failed to create Render Target View");
+      return hr;
+    }
+
+    // Recrear el depth stencil
+    hr = m_depthStencil.init(m_device,
+      m_window.m_width,
+      m_window.m_height,
+      DXGI_FORMAT_D24_UNORM_S8_UINT,
+      D3D11_BIND_DEPTH_STENCIL,
+      4,
+      0);
+    if (FAILED(hr)) {
+      ERROR("ResizeWindow", "Depth Stencil", "Failed to create Depth Stencil");
+      return hr;
+    }
+
+    // Recrear el depth stencil view
+    hr = m_depthStencilView.init(m_device,
+      m_depthStencil,
+      DXGI_FORMAT_D24_UNORM_S8_UINT);
+    if (FAILED(hr)) {
+      ERROR("ResizeWindow", "Depth Stencil View", "Failed to create new Depth Stencil View");
+      return hr;
+    }
+
+    // Actualizar el viewport
+    m_viewport.init(m_window);
+
+    // Actualizar la proyección
+    m_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_window.m_width / (float)m_window.m_height, 0.01f, 100.0f);
+    cbChangesOnResize.mProjection = XMMatrixTranspose(m_Projection);
+    m_changeOnResize.update(m_deviceContext, 0, nullptr, &cbChangesOnResize, 0, 0);
+  }
+}
+
 int
 BaseApp::run(HINSTANCE hInstance,
   HINSTANCE hPrevInstance,
@@ -337,99 +422,4 @@ BaseApp::run(HINSTANCE hInstance,
   destroy();
 
   return (int)msg.wParam;
-}
-
-LRESULT BaseApp::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
-{
-  PAINTSTRUCT ps;
-  HDC hdc;
-
-  switch (message)
-  {
-  case WM_PAINT:
-    hdc = BeginPaint(hWnd, &ps);
-    EndPaint(hWnd, &ps);
-    break;
-
-  case WM_SIZE:
-    if (m_swapchain.g_pSwapChain) {
-      m_window.m_width = LOWORD(lParam);
-      m_window.m_height = HIWORD(lParam);
-
-      // Libera los recursos existentes
-      m_renderTargetView.destroy();
-      m_depthStencilView.destroy();
-      m_depthStencil.destroy();
-      m_backBuffer.destroy();
-
-      // Redimensionar el swap chain
-      HRESULT hr = m_swapchain.g_pSwapChain->ResizeBuffers(0,
-        m_window.m_width,
-        m_window.m_height,
-        DXGI_FORMAT_R8G8B8A8_UNORM,
-        0);
-      if (FAILED(hr)) {
-        MessageBox(hWnd, "Failed to resize swap chain buffers.", "Error", MB_OK);
-        PostQuitMessage(0);
-      }
-
-      // **3. RECREAR EL BACK BUFFER**
-      hr = m_swapchain.g_pSwapChain->GetBuffer(0,
-        __uuidof(ID3D11Texture2D),
-        reinterpret_cast<void**>(&m_backBuffer.m_texture));
-      if (FAILED(hr)) {
-        ERROR("SwapChain", "Resize", "Failed to get new back buffer");
-        return hr;
-      }
-
-      // **4. RECREAR EL RENDER TARGET VIEW**
-      hr = m_renderTargetView.init(m_device,
-        m_backBuffer,
-        DXGI_FORMAT_R8G8B8A8_UNORM);
-      if (FAILED(hr)) {
-        ERROR("RenderTargetView", "Resize", "Failed to create new RenderTargetView");
-        return hr;
-      }
-
-      // **5. RECREAR EL DEPTH STENCIL VIEW**
-      hr = m_depthStencil.init(m_device,
-        m_window.m_width,
-        m_window.m_height,
-        DXGI_FORMAT_D24_UNORM_S8_UINT,
-        D3D11_BIND_DEPTH_STENCIL,
-        4,
-        0);
-      if (FAILED(hr)) {
-        ERROR("DepthStencil", "Resize", "Failed to create new DepthStencil");
-        return hr;
-      }
-
-      hr = m_depthStencilView.init(m_device,
-        m_depthStencil,
-        DXGI_FORMAT_D24_UNORM_S8_UINT);
-      if (FAILED(hr)) {
-        ERROR("DepthStencilView", "Resize", "Failed to create new DepthStencilView");
-        return hr;
-      }
-
-      // Actualizar el viewport
-      m_viewport.init(m_window);
-
-      // Actualizar la proyección
-      m_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_window.m_width / (float)m_window.m_height, 0.01f, 100.0f);
-      CBChangeOnResize cbChangesOnResize;
-      cbChangesOnResize.mProjection = XMMatrixTranspose(m_Projection);
-      m_changeOnResize.update(m_deviceContext, 0, nullptr, &cbChangesOnResize, 0, 0);
-    }
-    break;
-
-  case WM_DESTROY:
-    PostQuitMessage(0);
-    break;
-
-  default:
-    return DefWindowProc(hWnd, message, wParam, lParam);
-  }
-
-  return 0;
 }

@@ -17,7 +17,7 @@ WndProc(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam) {
     break;
 
   case WM_SIZE:
-
+    g_bApp.ResizeWindow(hWnd, lParam);
     break;
 
   case WM_DESTROY:

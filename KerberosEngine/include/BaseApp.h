@@ -47,6 +47,18 @@ public:
     destroy();
 
   /**
+   * @brief
+   */
+  HRESULT 
+  ResizeWindow(HWND hWnd, LPARAM lParam);
+
+  /**
+  * @brief
+  */
+  HRESULT
+  updateTranslationByKey();
+
+  /**
    * @brief Runs the application from the main entry point.
    * @param hInstance Handle to the instance of the program.
    * @param hPrevInstance Handle to the previous instance.
@@ -86,4 +98,13 @@ private:
   XMMATRIX                            m_World;
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
+
+  XMFLOAT3 position;
+  XMFLOAT3 rotation;
+  XMFLOAT3 scale;
+  MeshComponent m_meshComponent;
+
+  CBChangesEveryFrame cb;
+  CBNeverChanges cbNeverChanges;
+  CBChangeOnResize cbChangesOnResize;
 };
