@@ -73,3 +73,26 @@ enum
   PIXEL_SHADER = 1
 };
 
+struct
+  Camera {
+  XMFLOAT3 position; 
+  XMFLOAT3 target;  // Punto al que mira
+
+  XMFLOAT3 up;      // Vector hacia arriba
+  XMFLOAT3 forward;
+  XMFLOAT3 right;
+
+  float yaw;        // Rotación en el eje Y
+  float pitch;      // Rotación en el eje X
+
+  Camera() {
+    position = XMFLOAT3(0.0f, 0.0f, -5.0f);
+    target = XMFLOAT3(0.0f, 2.0f, 0.0f);
+    up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+    forward =XMFLOAT3(0.0f, 0.0f, 1.0f);
+    right = XMFLOAT3(1.0f, 0.0f, 0.0f);
+    yaw = 0.0f;
+    pitch = 0.0f;
+  }
+};
+

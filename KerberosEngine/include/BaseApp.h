@@ -55,8 +55,14 @@ public:
   /**
   * @brief
   */
-  HRESULT
-  updateTranslationByKey();
+  void
+  inputActionMap(float deltaTime);
+
+  /**
+  * @brief
+  */
+  void
+  UpdateCamera();
 
   /**
    * @brief Runs the application from the main entry point.
@@ -67,14 +73,14 @@ public:
    * @param wndproc Pointer to the window function for handling messages.
    */
   int
-    run(HINSTANCE hInstance,
+  run(HINSTANCE hInstance,
       HINSTANCE hPrevInstance,
       LPWSTR lpCmdLine,
       int nCmdShow,
       WNDPROC wndproc);
 
   LRESULT CALLBACK
-    WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+  WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
   Window                              m_window;
@@ -107,4 +113,10 @@ private:
   CBChangesEveryFrame cb;
   CBNeverChanges cbNeverChanges;
   CBChangeOnResize cbChangesOnResize;
+
+  Camera m_camera;
+
+public:
+  bool keys[256] = { false };
+  float m_speed = 0;
 };

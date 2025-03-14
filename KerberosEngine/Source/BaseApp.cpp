@@ -190,11 +190,11 @@ BaseApp::init() {
     return hr;
 
   // Initialize the world matrices
-  m_World = XMMatrixIdentity();
-
   scale.x = 1.0f;
   scale.y = 1.0f;
   scale.z = 1.0f;
+
+  m_World = XMMatrixIdentity();
 
   // Initialize the view matrix
   XMVECTOR Eye = XMVectorSet(0.0f, 3.0f, -6.0f, 0.0f);
@@ -213,7 +213,7 @@ BaseApp::update() {
   {
     t += (float)XM_PI * 0.0125f;
   }
-  else  {
+  else {
     static DWORD dwTimeStart = 0;
     DWORD dwTimeCur = GetTickCount();
     if (dwTimeStart == 0)
@@ -221,13 +221,17 @@ BaseApp::update() {
     t = (dwTimeCur - dwTimeStart) / 1000.0f;
   }
 
+  inputActionMap(t);
+
+  rotation.y = t;
+
   m_vMeshColor = XMFLOAT4(
     // Modify the color
     m_vMeshColor.x = (sinf(t * 1.0f) + 1.0f) * 0.5f,
     m_vMeshColor.y = (cosf(t * 3.0f) + 1.0f) * 0.5f,
     m_vMeshColor.z = (sinf(t * 5.0f) + 1.0f) * 0.5f,
     1.0f
-    );
+  );
 
   // Update the rotation and color of the object
   XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -236,7 +240,7 @@ BaseApp::update() {
 
   // Compose the final matrix in the orden: scale -> rotation -> scale
   m_World = scaleMatrix * rotationMatrix * traslationMatrix;
-  
+
   // Update variables that change once per frame
   cb.mWorld = XMMatrixTranspose(m_World);
   cb.vMeshColor = m_vMeshColor;
@@ -245,8 +249,7 @@ BaseApp::update() {
   // Initialize the projection matrix
   m_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_window.m_width / (float)m_window.m_height, 0.01f, 100.0f);
 
-  cbNeverChanges.mView = XMMatrixTranspose(m_View);
-  m_neverChanges.update(m_deviceContext, 0, nullptr, &cbNeverChanges, 0, 0);
+  UpdateCamera();
 
   cbChangesOnResize.mProjection = XMMatrixTranspose(m_Projection);
   m_changeOnResize.update(m_deviceContext, 0, nullptr, &cbChangesOnResize, 0, 0);
@@ -310,7 +313,7 @@ BaseApp::destroy() {
   m_device.destroy();
 }
 
-HRESULT 
+HRESULT
 BaseApp::ResizeWindow(HWND hWnd, LPARAM lParam)
 {
   // Validar que Swapchain exista
@@ -385,6 +388,57 @@ BaseApp::ResizeWindow(HWND hWnd, LPARAM lParam)
     cbChangesOnResize.mProjection = XMMatrixTranspose(m_Projection);
     m_changeOnResize.update(m_deviceContext, 0, nullptr, &cbChangesOnResize, 0, 0);
   }
+}
+
+void
+BaseApp::inputActionMap(float deltaTime) {
+  m_speed = 0.001f;
+  float moveSpeedCamera = 0.01;
+
+  if (keys[87]) { // 119 minuscula (W)
+    position.y += m_speed * deltaTime;
+  }
+  if (keys[83]) { // 115 minuscula (S)
+    position.y -= m_speed * deltaTime;
+  }
+  if (keys[65]) { // 97 minuscula (A)
+    position.x -= m_speed * deltaTime;
+  }
+  if (keys[68]) { // 100 minuscula (D)
+    position.x += m_speed * deltaTime;
+  }
+  if (keys[81]) { // 113 minuscula (Q)
+    position.z -= m_speed * deltaTime;
+  }
+  if (keys[69]) { // 101 minuscula (E)
+    position.z += m_speed * deltaTime;
+  }
+
+  XMVECTOR pos = XMLoadFloat3(&m_camera.position);
+  XMVECTOR forward = XMLoadFloat3(&m_camera.forward);
+  XMVECTOR right = XMLoadFloat3(&m_camera.right);
+
+  if (keys['I']) pos += forward * moveSpeedCamera;
+  if (keys['K']) pos -= forward * moveSpeedCamera;
+  if (keys['J']) pos = right * moveSpeedCamera;
+  if (keys['L']) pos += right * moveSpeedCamera;
+
+  XMStoreFloat3(&m_camera.position, pos);
+}
+
+void
+BaseApp::UpdateCamera() {
+  // Convertir la direeción de la cámara a vectores normalizados
+  XMVECTOR pos = XMLoadFloat3(&m_camera.position);
+  XMVECTOR dir = XMLoadFloat3(&m_camera.forward);
+  XMVECTOR up = XMLoadFloat3(&m_camera.up);
+
+  // Calcular la nueva vista
+  m_View = XMMatrixLookAtLH(pos, pos + dir, up);
+
+  // Transponer y actualizar el buffer de la vista
+  cbNeverChanges.mView = XMMatrixTranspose(m_View);
+  m_neverChanges.update(m_deviceContext, 0, nullptr, &cbNeverChanges, 0, 0);
 }
 
 int
