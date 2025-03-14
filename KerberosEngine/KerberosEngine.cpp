@@ -1,4 +1,4 @@
-#include "BaseApp.h"
+﻿#include "BaseApp.h"
 
 //--------------------------------------------------------------------------------------
 // Global Variables
@@ -30,6 +30,22 @@ WndProc(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam) {
 
   case WM_KEYUP:
     g_bApp.keys[wParam] = false;
+    break;
+
+  case WM_RBUTTONDOWN:
+    g_bApp.mouseLeftDown = true;
+    break;
+
+  case WM_RBUTTONUP:
+    g_bApp.mouseLeftDown = false;
+    break;
+
+  case WM_MOUSEMOVE:
+    if (g_bApp.mouseLeftDown) {
+      int x = LOWORD(lParam);
+      int y = HIWORD(lParam);
+      g_bApp.RotateCamera(x, y);
+    }
     break;
 
   default:

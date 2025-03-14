@@ -73,23 +73,31 @@ enum
   PIXEL_SHADER = 1
 };
 
+enum
+  ComponentType {
+  NONE = 0,     ///< Tipo de componente no especificado.
+  TRANSFORM = 1,///< Componente de transformación.
+  MESH = 2,     ///< Componente de malla.
+  MATERIAL = 3  ///< Componente de material.
+};
+
 struct
   Camera {
   XMFLOAT3 position; 
   XMFLOAT3 target;  // Punto al que mira
 
   XMFLOAT3 up;      // Vector hacia arriba
-  XMFLOAT3 forward;
-  XMFLOAT3 right;
+  XMFLOAT3 forward; // Dirección adelante
+  XMFLOAT3 right;   // Direción a la derecha
 
   float yaw;        // Rotación en el eje Y
   float pitch;      // Rotación en el eje X
 
   Camera() {
-    position = XMFLOAT3(0.0f, 0.0f, -5.0f);
-    target = XMFLOAT3(0.0f, 2.0f, 0.0f);
+    position = XMFLOAT3(0.0f, 1.0f, -5.0f);
+    target = XMFLOAT3(0.0f, 1.0f, 0.0f);
     up = XMFLOAT3(0.0f, 1.0f, 0.0f);
-    forward =XMFLOAT3(0.0f, 0.0f, 1.0f);
+    forward = XMFLOAT3(0.0f, 0.0f, 1.0f);
     right = XMFLOAT3(1.0f, 0.0f, 0.0f);
     yaw = 0.0f;
     pitch = 0.0f;

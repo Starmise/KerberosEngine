@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Prerequisites.h"
 #include "Window.h"
 #include "Device.h"
@@ -11,6 +11,7 @@
 #include "ShaderProgram.h"
 #include "MeshComponent.h"
 #include "Buffer.h"
+#include "SamplerState.h"
 
 class
   BaseApp {
@@ -26,30 +27,30 @@ public:
    * @return HRESULT indicating success or failure of the initialization.
    */
   HRESULT
-    init();
+  init();
 
   /**
    * @brief  Updates the application logic for each frame.
    */
   void
-    update();
+  update();
 
   /**
    * @brief Renders the elements on the window.
    */
   void
-    render();
+  render();
 
   /**
    * @brief Releases resources and elements before exiting to free memory.
    */
   void
-    destroy();
+  destroy();
 
   /**
    * @brief
    */
-  HRESULT 
+  HRESULT
   ResizeWindow(HWND hWnd, LPARAM lParam);
 
   /**
@@ -65,6 +66,12 @@ public:
   UpdateCamera();
 
   /**
+  * @brief
+  */
+  void
+  RotateCamera(int mouseX, int mouseY);
+
+  /**
    * @brief Runs the application from the main entry point.
    * @param hInstance Handle to the instance of the program.
    * @param hPrevInstance Handle to the previous instance.
@@ -78,9 +85,6 @@ public:
       LPWSTR lpCmdLine,
       int nCmdShow,
       WNDPROC wndproc);
-
-  LRESULT CALLBACK
-  WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 private:
   Window                              m_window;
@@ -99,8 +103,8 @@ private:
   Buffer                              m_changeOnResize;
   Buffer                              m_changesEveryFrame;
   Texture                             m_textureRV;
+  SamplerState                        m_samplerState;
 
-  ID3D11SamplerState* g_pSamplerLinear = NULL;
   XMMATRIX                            m_World;
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
@@ -108,7 +112,7 @@ private:
   XMFLOAT3 position;
   XMFLOAT3 rotation;
   XMFLOAT3 scale;
-  MeshComponent m_meshComponent;
+  MeshComponent MC;
 
   CBChangesEveryFrame cb;
   CBNeverChanges cbNeverChanges;
@@ -118,5 +122,8 @@ private:
 
 public:
   bool keys[256] = { false };
-  float m_speed = 0;
+  int lastX;
+  int lastY;
+  float sensitivity = 0.01f;
+  bool mouseLeftDown = false;
 };
