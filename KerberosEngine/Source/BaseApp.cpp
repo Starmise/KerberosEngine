@@ -186,11 +186,19 @@ BaseApp::init() {
   XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
   m_View = XMMatrixLookAtLH(Eye, At, Up);
 
+  m_UI.init(m_window.m_hWnd, m_device.m_device, m_deviceContext.m_deviceContext);
+
   return S_OK;
 }
 
 void
 BaseApp::update() {
+  // Updates the UI
+  m_UI.update();
+
+  m_UI.GUITab("ImKerberos Test");
+  m_UI.GUITab("Docking Test");
+
   // Update our time
   static float t = 0.0f;
   if (m_swapchain.m_driverType == D3D_DRIVER_TYPE_REFERENCE)
@@ -208,6 +216,8 @@ BaseApp::update() {
   inputActionMap(t);
 
   rotation.y = t;
+  rotation.x = t;
+  rotation.z = t;
 
   // Update the rotation and color of the object
   XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -274,8 +284,11 @@ BaseApp::render() {
   m_textureRV.render(m_deviceContext, 0, 1);
   m_samplerState.render(m_deviceContext, 0, 1);
 
-  // Drwa
+  // Drawing
   m_deviceContext.DrawIndexed(MC.m_index.size(), 0, 0);
+
+  // Render the UI
+  m_UI.render();
 
   // Present our back buffer to our front buffer
   m_swapchain.present();
@@ -299,6 +312,7 @@ BaseApp::destroy() {
   m_swapchain.destroy();
   m_deviceContext.destroy();
   m_device.destroy();
+  m_UI.destroy();
 }
 
 HRESULT

@@ -18,6 +18,15 @@
     <Filter Include="Include">
       <UniqueIdentifier>{7e30cdfd-44ef-4c31-804e-dbb840c18070}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Imgui">
+      <UniqueIdentifier>{2a1e4e0e-c811-4d6c-bad3-cfbcbdcc915f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui\include">
+      <UniqueIdentifier>{cb09ac68-78bd-4799-a880-4277626a6e92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Imgui\src">
+      <UniqueIdentifier>{d49f101b-a6ff-4d66-8b18-c70078f71a76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Prerequisites.h">
@@ -65,6 +74,33 @@
     <ClInclude Include="include\SamplerState.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\backends\imgui_impl_win32.h">
+      <Filter>Imgui\src</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\backends\imgui_impl_dx11.h">
+      <Filter>Imgui\src</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\imconfig.h">
+      <Filter>Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\imgui.h">
+      <Filter>Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\imgui_internal.h">
+      <Filter>Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\imstb_rectpack.h">
+      <Filter>Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\imstb_textedit.h">
+      <Filter>Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="imGui\imgui-docking\imstb_truetype.h">
+      <Filter>Imgui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\UserInterface.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
@@ -105,6 +141,30 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\SamplerState.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui-docking\imgui.cpp">
+      <Filter>Imgui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui-docking\imgui_demo.cpp">
+      <Filter>Imgui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui-docking\imgui_draw.cpp">
+      <Filter>Imgui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui-docking\imgui_tables.cpp">
+      <Filter>Imgui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui-docking\imgui_widgets.cpp">
+      <Filter>Imgui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui-docking\backends\imgui_impl_win32.cpp">
+      <Filter>Imgui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="imGui\imgui-docking\backends\imgui_impl_dx11.cpp">
+      <Filter>Imgui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\UserInterface.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
