@@ -49,25 +49,30 @@ public:
   destroy();
 
   /**
-   * @brief
+   * @brief Resizes the application window and updates the correspondant rendering resources.
+   * @param hWnd Handle to the application window.
+   * @param lParam Contains the new width and height of the window.
    */
   HRESULT
   ResizeWindow(HWND hWnd, LPARAM lParam);
 
   /**
-  * @brief
+  * @brief Handles input actions and updates object movement based on the key pressed.
+  * @param deltaTime Time elapsed since the last frame, used for smooth movement.
   */
   void
   inputActionMap(float deltaTime);
 
   /**
-  * @brief
+  * @brief  Updates the camera view matrix based on its current position and direction.
   */
   void
   UpdateCamera();
 
   /**
-  * @brief
+  * @brief Rotates the camera based on mouse movement. 
+  * @param mouseX The current X position of the mouse.
+  * @param mouseY The current Y position of the mouse.
   */
   void
   RotateCamera(int mouseX, int mouseY);

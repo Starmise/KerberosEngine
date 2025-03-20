@@ -15,19 +15,24 @@ public:
   ~SamplerState() = default;
 
   /**
-   * @brief
+   * @brief Initializes the sampler state, which defines how textures are sampled in rendering.
+   * @param device Reference to the device
    */
   HRESULT
   init(Device& device);
 
   /**
-   * @brief
+   * @brief Updates the sampler state.
    */
   void
   update();
 
   /**
-   * @brief
+   * @brief Sets the sampler state in the device context, for texture sampling.
+ *
+ * @param deviceContext Reference to the device context.
+ * @param StartSlot The first slot to bind the sampler to.
+ * @param numSamplers Number of sampler states to set.
    */
   void
   render(DeviceContext& deviceContext, 
@@ -35,7 +40,7 @@ public:
            unsigned int numSamplers);
 
   /**
-   * @brief
+   * @brief Releases the sampler state resources.
    */
   void
   destroy();

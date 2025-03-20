@@ -15,7 +15,11 @@ public:
   ~InputLayout() = default;
 
   /**
-   * @brief
+   * @brief Sets the input layout using the device, input layout description
+   * and vertex shader data.
+   * @param device Reference to the device used to create the input layout.
+   * @param Layout Vector of D3D11_INPUT_ELEMENT_DESC structure for the input layout.
+   * @param VertexShaderData Pointer to the vertex shader.
    */
   HRESULT
   init(Device& device,
@@ -23,19 +27,19 @@ public:
       ID3DBlob* VertexShaderData);
 
   /**
-   * @brief
+   * @brief Updates the input layout state for any runtime modifications
    */
   void
   update();
 
   /**
-   * @brief
+   * @brief Binds the input layout to the rendering pipeline.
    */
   void
   render(DeviceContext& deviceContext);
 
   /**
-   * @brief
+   * @brief Releases the resources of the input layout.
    */
   void
   destroy();

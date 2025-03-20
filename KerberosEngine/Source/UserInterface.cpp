@@ -49,6 +49,7 @@ UserInterface::render() {
   {
     ImGui::UpdatePlatformWindows();
     ImGui::RenderPlatformWindowsDefault(); // Update default platform for Windows
+    //if (ImGui::DragFloat3("Posición", reinterpret_cast<float*>(&g_bApp.position), 0.1f)) {
   }
 }
 

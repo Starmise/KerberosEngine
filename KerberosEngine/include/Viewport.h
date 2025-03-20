@@ -15,31 +15,35 @@ public:
   ~Viewport() = default;
 
   /**
-   * @brief
+   * @brief Initializes the viewport using a Window instance.
+   * @param window Reference to the Window object.
    */
   HRESULT
   init(const Window& window);
 
   /**
-   * @brief
+   * @brief Initializes the viewport with the specified dimensions.
+   * @param width The width of the viewport.
+   * @param height The height of the viewport.
    */
   HRESULT
   init(unsigned int width, unsigned int height);
 
   /**
-   * @brief
+   * @brief Updates the viewport settings when any changes to the dimensions are required.
    */
   void
   update();
 
   /**
-   * @brief
+   * @brief Renders the viewport using the given DeviceContext method.
+   * @param deviceContext Reference to the DeviceContext used for rendering.
    */
   void
   render(DeviceContext& deviceContext);
 
   /**
-   * @brief
+   * @brief Releases the resources from the viewport.
    */
   void
   destroy();

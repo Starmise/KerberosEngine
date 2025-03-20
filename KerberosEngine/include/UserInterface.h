@@ -48,7 +48,7 @@ public:
   setupGUIStyle();
 
   /**
-   * @brief Method place holder, contains the content information to be displayed in the UI of the ImGui tab
+   * @brief Place holder method, contains the user interface components to be displayed in the ImGui tab
    */
   void
   GUITab(const std::string& tabName);
