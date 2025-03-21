@@ -1,5 +1,6 @@
 #pragma once
 #include "Prerequisites.h"
+#include "ImGuizmo.h"
 
 // Forward Declarations
 class Window;
