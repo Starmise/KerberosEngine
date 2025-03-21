@@ -198,6 +198,7 @@ BaseApp::update() {
 
   m_UI.GUITab("ImKerberos Test");
   m_UI.GUITab("Docking Test");
+  m_UI.TransformGUI(*this);
 
   // Update our time
   static float t = 0.0f;

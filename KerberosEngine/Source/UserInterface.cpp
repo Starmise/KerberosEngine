@@ -2,6 +2,7 @@
 #include "Window.h"
 #include "Device.h"
 #include "DeviceContext.h"
+#include "BaseApp.h"
 
 void 
 UserInterface::init(void* window, 
@@ -125,6 +126,18 @@ UserInterface::setupGUIStyle() {
 void 
 UserInterface::GUITab(const std::string& tabName) {
   ImGui::Begin(tabName.c_str());
+  ImGui::End();
+}
+
+void 
+UserInterface::TransformGUI(BaseApp& g_bApp) {
+
+  ImGui::Begin("Transform"); 
+
+  ImGui::DragFloat3("Position", &g_bApp.position.x, 0.1f);
+  ImGui::DragFloat3("Rotation", &g_bApp.rotation.x, 0.1f);
+  ImGui::DragFloat3("Scale", &g_bApp.scale.x, 0.1f);
+
   ImGui::End();
 }
 

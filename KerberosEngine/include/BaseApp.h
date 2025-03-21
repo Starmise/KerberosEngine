@@ -116,9 +116,6 @@ private:
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
 
-  XMFLOAT3 position;
-  XMFLOAT3 rotation;
-  XMFLOAT3 scale;
   MeshComponent MC;
 
   CBChangesEveryFrame cb;
@@ -128,6 +125,10 @@ private:
   Camera m_camera;
 
 public:
+  XMFLOAT3 position;
+  XMFLOAT3 rotation;
+  XMFLOAT3 scale;
+
   bool keys[256] = { false };
   int lastX;
   int lastY;
