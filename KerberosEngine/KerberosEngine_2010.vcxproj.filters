@@ -101,6 +101,9 @@
     <ClInclude Include="include\UserInterface.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="include\ModelLoader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
@@ -165,6 +168,9 @@
       <Filter>Imgui\src</Filter>
     </ClCompile>
     <ClCompile Include="Source\UserInterface.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ModelLoader.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
