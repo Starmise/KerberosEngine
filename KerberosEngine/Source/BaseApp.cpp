@@ -6,9 +6,6 @@ HRESULT
 BaseApp::init() {
   HRESULT hr = S_OK;
 
-  // Load Model
-  //m_model.loadModel("Models/Vala2.fbx");
-
   // Create Swapchain and BackBuffer
   hr = m_swapchain.init(m_device, m_deviceContext, m_backBuffer, m_window);
   if (FAILED(hr)) {
@@ -72,6 +69,9 @@ BaseApp::init() {
   if (FAILED(hr)) {
     return hr;
   }
+
+  // Load Model
+  m_mloader.LoadFBXModel("Models/Koro.fbx");
 
   // Create vertex buffer
   SimpleVertex vertices[] =

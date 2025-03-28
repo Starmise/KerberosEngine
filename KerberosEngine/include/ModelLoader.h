@@ -16,6 +16,12 @@ public:
    * @brief
    */
   bool
+  InitializeFBXManager();
+
+  /**
+   * @brief
+   */
+  bool
   LoadFBXModel(const std::string& filePath);
 
   /**
@@ -33,8 +39,14 @@ public:
   /**
    * @brief
    */
+  void
+  ProcessFBXMaterials(FbxSurfaceMaterial* material);
+
+  /**
+   * @brief
+   */
   std::vector<std::string>
-  ProcessFBXMaterials() const { return textureFileNames; }
+  GetTextureFileNames() const { return textureFileNames; }
 
 private:
   FbxManager* lSdkManager;

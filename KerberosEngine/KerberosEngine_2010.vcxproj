@@ -474,6 +474,14 @@
     <ClInclude Include="include\Swapchain.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\UserInterface.h" />
+    <ClInclude Include="include\utilities\Memory\TSharedPointer.h" />
+    <ClInclude Include="include\utilities\Memory\TStaticPtr.h" />
+    <ClInclude Include="include\utilities\Memory\TUniquePtr.h" />
+    <ClInclude Include="include\utilities\Memory\TWeakPointer.h" />
+    <ClInclude Include="include\utilities\Vectors\Quaternion.h" />
+    <ClInclude Include="include\utilities\Vectors\Vector2.h" />
+    <ClInclude Include="include\utilities\Vectors\Vector3.h" />
+    <ClInclude Include="include\utilities\Vectors\Vector4.h" />
     <ClInclude Include="include\Viewport.h" />
     <ClInclude Include="include\Window.h" />
     <CLInclude Include="resource.h" />

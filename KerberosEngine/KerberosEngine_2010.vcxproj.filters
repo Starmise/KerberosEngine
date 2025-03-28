@@ -27,6 +27,15 @@
     <Filter Include="Imgui\src">
       <UniqueIdentifier>{d49f101b-a6ff-4d66-8b18-c70078f71a76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Include\Utilities">
+      <UniqueIdentifier>{e1d826d5-6f5d-44b2-ba81-03cf6b7f7c64}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Utilities\Memory">
+      <UniqueIdentifier>{da1d268e-3c86-44dd-b5e2-7253a9e39d8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Include\Utilities\Vectors">
+      <UniqueIdentifier>{3cc92ad7-cfb3-4652-b941-39f841e68372}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Prerequisites.h">
@@ -103,6 +112,30 @@
     </ClInclude>
     <ClInclude Include="include\ModelLoader.h">
       <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Memory\TSharedPointer.h">
+      <Filter>Include\Utilities\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Memory\TStaticPtr.h">
+      <Filter>Include\Utilities\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Memory\TUniquePtr.h">
+      <Filter>Include\Utilities\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Memory\TWeakPointer.h">
+      <Filter>Include\Utilities\Memory</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Vectors\Vector4.h">
+      <Filter>Include\Utilities\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Vectors\Quaternion.h">
+      <Filter>Include\Utilities\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Vectors\Vector2.h">
+      <Filter>Include\Utilities\Vectors</Filter>
+    </ClInclude>
+    <ClInclude Include="include\utilities\Vectors\Vector3.h">
+      <Filter>Include\Utilities\Vectors</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
