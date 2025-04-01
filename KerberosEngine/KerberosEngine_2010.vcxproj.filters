@@ -173,6 +173,9 @@
     <ClInclude Include="include\ECS\Component.h">
       <Filter>Include\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="include\ECS\Actor.h">
+      <Filter>Include\ECS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
@@ -240,6 +243,9 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\ModelLoader.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Actor.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>

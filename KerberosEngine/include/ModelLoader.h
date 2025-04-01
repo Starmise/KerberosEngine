@@ -55,3 +55,9 @@ private:
 public:
   std::vector<MeshComponent> meshes;
 };
+
+
+/*
+* No se añadieron los archivos alembic-mt.lib, libfbxsdk-md.lib y libfbxsdk-mt.lib del path:
+* ...\KerberosEngine\KerberosEngine\lib\fbxlibs, debido a su peso mayor a 100mb
+*/

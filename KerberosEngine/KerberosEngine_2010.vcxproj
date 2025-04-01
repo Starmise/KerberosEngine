@@ -431,6 +431,7 @@
     <ClCompile Include="imGui\imgui-docking\imgui_tables.cpp" />
     <ClCompile Include="imGui\imgui-docking\imgui_widgets.cpp" />
     <ClCompile Include="KerberosEngine.cpp" />
+    <ClCompile Include="Source\Actor.cpp" />
     <ClCompile Include="Source\BaseApp.cpp" />
     <ClCompile Include="Source\Buffer.cpp" />
     <ClCompile Include="Source\DepthStencilView.cpp" />
@@ -464,6 +465,7 @@
     <ClInclude Include="include\DepthStencilView.h" />
     <ClInclude Include="include\Device.h" />
     <ClInclude Include="include\DeviceContext.h" />
+    <ClInclude Include="include\ECS\Actor.h" />
     <ClInclude Include="include\ECS\Component.h" />
     <ClInclude Include="include\ECS\Entity.h" />
     <ClInclude Include="include\InputLayout.h" />

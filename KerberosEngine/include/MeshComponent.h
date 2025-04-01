@@ -14,7 +14,7 @@ public:
   /**
    * @brief Virtual destructor.
    */
-  //virtual
+  virtual
   ~MeshComponent() = default;
 
   void
