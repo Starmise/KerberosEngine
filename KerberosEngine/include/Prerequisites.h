@@ -25,6 +25,12 @@
 #include <imgui_internal.h>
 #include "imgui_impl_win32.h"
 
+// Third parties
+#include "utilities/Memory/TSharedPointer.h"
+#include "utilities/Memory/TWeakPointer.h"
+#include "utilities/Memory/TStaticPtr.h"
+#include "utilities/Memory/TUniquePtr.h"
+
 // MACROS
 #define SAFE_RELEASE(x) if(x != nullptr) x->Release(); x = nullptr;
 
@@ -84,7 +90,11 @@ enum
   NONE = 0,     ///< Tipo de componente no especificado.
   TRANSFORM = 1,///< Componente de transformación.
   MESH = 2,     ///< Componente de malla.
-  MATERIAL = 3  ///< Componente de material.
+  MATERIAL = 3,  ///< Componente de material.
+  PHYSICS = 4,
+  AUDIOSOURCE = 5,
+  SHAPE = 6,
+  TEXTURE = 7
 };
 
 struct

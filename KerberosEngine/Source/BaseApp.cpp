@@ -70,6 +70,9 @@ BaseApp::init() {
     return hr;
   }
 
+  // Load Model
+  m_mloader.LoadFBXModel("Models/Koro.fbx");
+
   // Create vertex buffer
   SimpleVertex vertices[] =
   {

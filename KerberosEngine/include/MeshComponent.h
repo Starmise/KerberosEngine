@@ -1,26 +1,27 @@
 #pragma once
 #include "Prerequisites.h"
 #include "DeviceContext.h"
+#include "ECS/Component.h"
 
 class
-MeshComponent {
+MeshComponent: public Component {
 public:
   /**
    * @brief Constructor initializing by default the Vertex and Index number in 0
    */
-  MeshComponent() : m_numVertex(0), m_numIndex(0) {};
+  MeshComponent() : m_numVertex(0), m_numIndex(0), Component(ComponentType::MESH) {}
 
   /**
    * @brief Virtual destructor.
    */
-  //virtual
+  virtual
   ~MeshComponent() = default;
 
-  /*void
-    update(float deltaTime) override{}
+  void
+  update(float deltaTime) override{}
 
   void
-    render(DeviceContext deviceContext) override {}*/
+  render(DeviceContext& deviceContext) override {}
 
   std::string m_name;
   std::vector<SimpleVertex> m_vertex; // Vértices de la malla

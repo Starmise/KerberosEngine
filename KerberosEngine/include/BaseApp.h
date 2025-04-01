@@ -13,6 +13,7 @@
 #include "Buffer.h"
 #include "SamplerState.h"
 #include "UserInterface.h"
+#include "ModelLoader.h"
 
 class
   BaseApp {
@@ -111,6 +112,7 @@ private:
   Texture                             m_textureRV;
   SamplerState                        m_samplerState;
   UserInterface                       m_UI;
+  ModelLoader                         m_mloader;
 
   XMMATRIX                            m_World;
   XMMATRIX                            m_View;
