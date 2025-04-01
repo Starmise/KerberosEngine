@@ -464,6 +464,8 @@
     <ClInclude Include="include\DepthStencilView.h" />
     <ClInclude Include="include\Device.h" />
     <ClInclude Include="include\DeviceContext.h" />
+    <ClInclude Include="include\ECS\Component.h" />
+    <ClInclude Include="include\ECS\Entity.h" />
     <ClInclude Include="include\InputLayout.h" />
     <ClInclude Include="include\MeshComponent.h" />
     <ClInclude Include="include\ModelLoader.h" />
@@ -474,10 +476,17 @@
     <ClInclude Include="include\Swapchain.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\UserInterface.h" />
+    <ClInclude Include="include\utilities\Matrix\Matrix2x2.h" />
+    <ClInclude Include="include\utilities\Matrix\Matrix3x3.h" />
+    <ClInclude Include="include\utilities\Matrix\Matrix4x4.h" />
     <ClInclude Include="include\utilities\Memory\TSharedPointer.h" />
     <ClInclude Include="include\utilities\Memory\TStaticPtr.h" />
     <ClInclude Include="include\utilities\Memory\TUniquePtr.h" />
     <ClInclude Include="include\utilities\Memory\TWeakPointer.h" />
+    <ClInclude Include="include\utilities\Structures\TArray.h" />
+    <ClInclude Include="include\utilities\Structures\TMap.h" />
+    <ClInclude Include="include\utilities\Structures\TPair.h" />
+    <ClInclude Include="include\utilities\Structures\TSet.h" />
     <ClInclude Include="include\utilities\Vectors\Quaternion.h" />
     <ClInclude Include="include\utilities\Vectors\Vector2.h" />
     <ClInclude Include="include\utilities\Vectors\Vector3.h" />
