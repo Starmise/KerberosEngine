@@ -45,6 +45,9 @@
     <Filter Include="Include\Utilities\Structures">
       <UniqueIdentifier>{05a5cabb-0c5c-4972-9aab-24346b9a9312}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\ECS">
+      <UniqueIdentifier>{7ae956ad-36d5-41f3-8015-d378063f0acc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Prerequisites.h">
@@ -176,6 +179,12 @@
     <ClInclude Include="include\ECS\Actor.h">
       <Filter>Include\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="include\utilities\EngineMath.h">
+      <Filter>Include\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ECS\Transform.h">
+      <Filter>Include\ECS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
@@ -246,7 +255,10 @@
       <Filter>Resource Files</Filter>
     </ClCompile>
     <ClCompile Include="Source\Actor.cpp">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Transform.cpp">
+      <Filter>Resource Files\ECS</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

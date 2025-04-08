@@ -1,12 +1,12 @@
 #pragma once
 #include "Prerequisites.h"
 #include "ImGuizmo.h"
+#include "ECS/Transform.h"
 
 // Forward Declarations
 class Window;
 class Device;
 class DeviceContext;
-class BaseApp;
 
 class
 UserInterface {
@@ -59,7 +59,7 @@ public:
    * @brief Place holder method, contains the user interface components to be displayed in the ImGui tab
    */
   void
-  TransformGUI(BaseApp& g_bApp);
+  TransformGUI(Transform& transform);
 
   /**
    * @brief Allows you to manipulate three float values in the GUI

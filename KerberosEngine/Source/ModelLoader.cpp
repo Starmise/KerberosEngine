@@ -61,7 +61,7 @@ ModelLoader::LoadFBXModel(const std::string& filePath) {
       FbxSurfaceMaterial* material = lScene->GetMaterial(i);
       ProcessFBXMaterials(material);
     }
-
+    
     return true;
   }
   return false;

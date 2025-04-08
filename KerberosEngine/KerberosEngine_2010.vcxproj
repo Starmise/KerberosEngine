@@ -444,6 +444,7 @@
     <ClCompile Include="Source\ShaderProgram.cpp" />
     <ClCompile Include="Source\Swapchain.cpp" />
     <ClCompile Include="Source\Texture.cpp" />
+    <ClCompile Include="Source\Transform.cpp" />
     <ClCompile Include="Source\UserInterface.cpp" />
     <ClCompile Include="Source\Viewport.cpp" />
     <ClCompile Include="Source\Window.cpp" />
@@ -468,6 +469,7 @@
     <ClInclude Include="include\ECS\Actor.h" />
     <ClInclude Include="include\ECS\Component.h" />
     <ClInclude Include="include\ECS\Entity.h" />
+    <ClInclude Include="include\ECS\Transform.h" />
     <ClInclude Include="include\InputLayout.h" />
     <ClInclude Include="include\MeshComponent.h" />
     <ClInclude Include="include\ModelLoader.h" />
@@ -478,6 +480,7 @@
     <ClInclude Include="include\Swapchain.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\UserInterface.h" />
+    <ClInclude Include="include\utilities\EngineMath.h" />
     <ClInclude Include="include\utilities\Matrix\Matrix2x2.h" />
     <ClInclude Include="include\utilities\Matrix\Matrix3x3.h" />
     <ClInclude Include="include\utilities\Matrix\Matrix4x4.h" />

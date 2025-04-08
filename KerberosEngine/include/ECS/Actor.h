@@ -4,6 +4,7 @@
 #include "Buffer.h"
 #include "Texture.h"
 #include "SamplerState.h"
+#include "Transform.h"
 using namespace std;
 
 // Forward Declarations
@@ -32,14 +33,14 @@ public:
   * @param deltaTime The time elapsed since the last update
   * @param deviceContext Reference to the device context used for update.
   */
-  virtual void
+  void
   update(float deltaTime, DeviceContext& deviceContext) override;
 
   /*
   * @brief Renders the actor
   * @param deviceContext Reference to the device context used for rendering.
   */
-  virtual void
+  void
   render(DeviceContext& deviceContext) override;
 
   /**
@@ -61,7 +62,7 @@ public:
   * @param textures Vector of Texture objects.
   */
   void 
-    setTextures(vector<Texture> textures) {
+  setTextures(vector<Texture> textures) {
     m_textures = textures;
   }
 

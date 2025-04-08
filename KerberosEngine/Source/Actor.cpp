@@ -3,7 +3,10 @@
 #include "Device.h"
 
 Actor::Actor(Device& device) {
-  EngineUtilities::TSharedPointer mesh = EngineUtilities::MakeShared<MeshComponent>();
+  EngineUtilities::TSharedPointer<Transform> trnasform = EngineUtilities::MakeShared<Transform>();
+  addComponent(trnasform);
+
+  EngineUtilities::TSharedPointer<MeshComponent> mesh = EngineUtilities::MakeShared<MeshComponent>();
   addComponent(mesh);
 
   HRESULT hr;
@@ -22,6 +25,11 @@ Actor::Actor(Device& device) {
 
 void
 Actor::update(float deltaTime, DeviceContext& deviceContext) {
+  // Update transform
+  getComponent<Transform>()->update(deltaTime);
+
+  m_changeEveryFrame.mWorld = XMMatrixTranspose(getComponent<Transform>()->matrix);
+  m_changeEveryFrame.vMeshColor = XMFLOAT4(0.7f, 0.7f, 0.7f, 1.0f);
 
   // Update Atributes
   m_modelBuffer.update(deviceContext, 0, nullptr, &m_changeEveryFrame, 0, 0);
@@ -29,6 +37,7 @@ Actor::update(float deltaTime, DeviceContext& deviceContext) {
 
 void
 Actor::render(DeviceContext& deviceContext) {
+  m_sampler.render(deviceContext, 0, 1);
 
   // Update Buffers for each mesh on the actor
   for (unsigned int i = 0; i < m_meshes.size(); i++) {
@@ -36,12 +45,12 @@ Actor::render(DeviceContext& deviceContext) {
     m_indexBuffers[i].render(deviceContext, 0, 1, false, DXGI_FORMAT_R32_UINT);
 
     if (m_textures.size() > 0) {
-      if (i <= m_textures.size() - 1) {
+      if (i < m_textures.size()) {
         m_textures[i].render(deviceContext, 0, 1);
       }
     }
 
-    m_modelBuffer.render(deviceContext, 2, 1);
+    m_modelBuffer.render(deviceContext, 2, 1, true);
 
     deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     deviceContext.DrawIndexed(m_meshes[i].m_numIndex, 0, 0);
@@ -63,8 +72,8 @@ Actor::destroy() {
   }
 
   m_modelBuffer.destroy();
-  //n_rasterizer.destroy();
-  //n_blendstate.destroy();
+  //m_rasterizer.destroy();
+  //m_blendstate.destroy();
   m_sampler.destroy();
 }
 

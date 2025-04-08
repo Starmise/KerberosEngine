@@ -14,6 +14,7 @@
 #include "SamplerState.h"
 #include "UserInterface.h"
 #include "ModelLoader.h"
+#include "ECS/Actor.h"
 
 class
   BaseApp {
@@ -104,32 +105,39 @@ private:
   DepthStencilView                    m_depthStencilView;
   Viewport                            m_viewport;
   ShaderProgram                       m_shaderProgram;
-  Buffer                              m_vertexBuffer;
-  Buffer                              m_indexBuffer;
+  //Buffer                              m_vertexBuffer;
+  //Buffer                              m_indexBuffer;
   Buffer                              m_neverChanges;
   Buffer                              m_changeOnResize;
   Buffer                              m_changesEveryFrame;
-  Texture                             m_textureRV;
-  SamplerState                        m_samplerState;
+  //Texture                             m_textureRV;
+  //SamplerState                        m_samplerState;
   UserInterface                       m_UI;
-  ModelLoader                         m_mloader;
 
-  XMMATRIX                            m_World;
+  ModelLoader                         m_mloader;
+  EngineUtilities::TSharedPointer<Actor> AKoro;
+  std::vector<Texture>                m_koroTextures;
+  ModelLoader                         m_mloader2;
+  Texture m_default;
+  EngineUtilities::TSharedPointer<Actor> AJones;
+  std::vector<Texture>                m_jonesyTextures;
+
+  //XMMATRIX                            m_World;
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
 
-  MeshComponent MC;
+  //MeshComponent MC;
 
-  CBChangesEveryFrame cb;
+  //CBChangesEveryFrame cb;
   CBNeverChanges cbNeverChanges;
   CBChangeOnResize cbChangesOnResize;
 
   Camera m_camera;
 
 public:
-  XMFLOAT3 position;
-  XMFLOAT3 rotation;
-  XMFLOAT3 scale;
+  //XMFLOAT3 position;
+  //XMFLOAT3 rotation;
+  //XMFLOAT3 scale;
 
   bool keys[256] = { false };
   int lastX;

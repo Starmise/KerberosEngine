@@ -70,88 +70,7 @@ BaseApp::init() {
     return hr;
   }
 
-  // Load Model
-  m_mloader.LoadFBXModel("Models/Koro.fbx");
-
-  // Create vertex buffer
-  SimpleVertex vertices[] =
-  {
-      { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(0.0f, 0.0f) },
-      { XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
-      { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f) },
-      { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
-
-      { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f, 0.0f) },
-      { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
-      { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f) },
-      { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
-
-      { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
-      { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
-      { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 1.0f) },
-      { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
-
-      { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
-      { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
-      { XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 1.0f) },
-      { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
-
-      { XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT2(0.0f, 0.0f) },
-      { XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT2(1.0f, 0.0f) },
-      { XMFLOAT3(1.0f, 1.0f, -1.0f), XMFLOAT2(1.0f, 1.0f) },
-      { XMFLOAT3(-1.0f, 1.0f, -1.0f), XMFLOAT2(0.0f, 1.0f) },
-
-      { XMFLOAT3(-1.0f, -1.0f, 1.0f), XMFLOAT2(0.0f, 0.0f) },
-      { XMFLOAT3(1.0f, -1.0f, 1.0f), XMFLOAT2(1.0f, 0.0f) },
-      { XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT2(1.0f, 1.0f) },
-      { XMFLOAT3(-1.0f, 1.0f, 1.0f), XMFLOAT2(0.0f, 1.0f) },
-  };
-
-  // Create index buffer
-  unsigned int indices[] =
-  {
-      3,1,0,
-      2,1,3,
-
-      6,4,5,
-      7,4,6,
-
-      11,9,8,
-      10,9,11,
-
-      14,12,13,
-      15,12,14,
-
-      19,17,16,
-      18,17,19,
-
-      22,20,21,
-      23,20,22
-  };
-
-  for (SimpleVertex vertex : vertices) {
-    MC.m_vertex.push_back(vertex);
-  }
-
-  for (unsigned int index : indices) {
-    MC.m_index.push_back(index);
-  }
-
-  MC.m_numVertex = MC.m_vertex.size();
-  MC.m_numIndex = MC.m_index.size();
-
-  hr = m_vertexBuffer.init(m_device, MC, D3D11_BIND_VERTEX_BUFFER);
-  if (FAILED(hr)) {
-    return hr;
-  }
-
-  hr = m_indexBuffer.init(m_device, MC, D3D11_BIND_INDEX_BUFFER);
-  if (FAILED(hr)) {
-    return hr;
-  }
-
   // Create the constant buffers
-
     // bd.ByteWidth = sizeof(CBChangeOnResize);
   hr = m_neverChanges.init(m_device, sizeof(CBNeverChanges));
   if (FAILED(hr))
@@ -163,25 +82,25 @@ BaseApp::init() {
     return hr;
 
   // Load the Texture
-  hr = m_changesEveryFrame.init(m_device, sizeof(CBChangesEveryFrame));
+  /*hr = m_changesEveryFrame.init(m_device, sizeof(CBChangesEveryFrame));
   if (FAILED(hr))
-    return hr;
+    return hr;*/
 
-  hr = m_textureRV.init(m_device, "seafloor.dds", DDS);
-  if (FAILED(hr))
-    return hr;
+  //hr = m_textureRV.init(m_device, "seafloor.dds", DDS);
+  //if (FAILED(hr))
+  //  return hr;
 
-  // Create the sample state
-  hr = m_samplerState.init(m_device);
-  if (FAILED(hr))
-    return hr;
+  //// Create the sample state
+  //hr = m_samplerState.init(m_device);
+  //if (FAILED(hr))
+  //  return hr;
 
-  // Initialize the world matrices
+  /*// Initialize the world matrices
   scale.x = 1.0f;
   scale.y = 1.0f;
   scale.z = 1.0f;
 
-  m_World = XMMatrixIdentity();
+  //m_World = XMMatrixIdentity();*/
 
   // Initialize the view matrix
   XMVECTOR Eye = XMVectorSet(0.0f, 3.0f, -6.0f, 0.0f);
@@ -190,6 +109,85 @@ BaseApp::init() {
   m_View = XMMatrixLookAtLH(Eye, At, Up);
 
   m_UI.init(m_window.m_hWnd, m_device.m_device, m_deviceContext.m_deviceContext);
+
+
+  // Set model actor
+  // Load Textures
+  Texture banda;
+  banda.init(m_device, "Textures/Koro/banda.png", ExtensionType::PNG);
+
+  Texture color;
+  color.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+
+  Texture color_ojos;
+  color_ojos.init(m_device, "Textures/Koro/color_ojos.png", ExtensionType::PNG);
+
+  Texture color_ojos_copia;
+  color_ojos_copia.init(m_device, "Textures/Koro/color_ojos_copia.png", ExtensionType::PNG);
+
+  m_default.init(m_device, "Textures/Default.png", ExtensionType::PNG);
+
+  m_koroTextures.push_back(banda);
+  m_koroTextures.push_back(color);
+  m_koroTextures.push_back(color_ojos);
+  m_koroTextures.push_back(color_ojos_copia);
+  m_koroTextures.push_back(m_default);
+
+  m_mloader.LoadFBXModel("Models/Koro.fbx");
+  AKoro = EngineUtilities::MakeShared<Actor>(m_device);
+  if (!AKoro.isNull()) {
+    // Init Transform
+    AKoro->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(2.0f, 1.0f, 1.0f),
+                                                  EngineUtilities::Vector3(XM_PI / -2.0f, 0.0f, XM_PI / 2.0f),
+                                                  EngineUtilities::Vector3(1.0f, 1.0f, 1.0f));
+    // Init Actor Mesh
+    AKoro->setMesh(m_device, m_mloader.meshes);
+    // Init Actor Textures
+    AKoro->setTextures(m_koroTextures);
+
+    std::string msg = AKoro->getName() + "Actor accessed successfully.";
+    MESSAGE("Actor", "Actor", msg.c_str());
+  }
+  else {
+    MESSAGE("Actor", "Actor", "Actor resource not found")
+  }
+
+  Texture body;
+  body.init(m_device, "Textures/jonesy/M_Med_Soldier_Body_01_C.tga.png", ExtensionType::PNG);
+  Texture bodyN;
+  bodyN.init(m_device, "Textures/jonesy/M_Med_Soldier_Body_01_N.tga.png", ExtensionType::PNG);
+  Texture head;
+  head.init(m_device, "Textures/jonesy/M_Med_Soldier_Head_01_C.tga.png", ExtensionType::PNG);
+  Texture headN;
+  headN.init(m_device, "Textures/jonesy/M_Med_Soldier_Head_01_N.tga.png", ExtensionType::PNG);
+  Texture hair;
+  hair.init(m_device, "Textures/jonesy/M_SML_Survivor_Hair_02_d.tga.png", ExtensionType::PNG);
+
+  m_jonesyTextures.push_back(body);
+  m_jonesyTextures.push_back(bodyN);
+  m_jonesyTextures.push_back(head);
+  m_jonesyTextures.push_back(headN);
+  m_jonesyTextures.push_back(hair);
+  m_jonesyTextures.push_back(m_default);
+
+  m_mloader2.LoadFBXModel("Models/Jonesy FBX Export3.fbx");
+  AJones = EngineUtilities::MakeShared<Actor>(m_device);
+  if (!AJones.isNull()) {
+    // Init Transform
+    AJones->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-3.0, -3.0f, 0.5f),
+      EngineUtilities::Vector3(0.0f, 1.3f, 0.0f),
+      EngineUtilities::Vector3(0.05f, 0.05f, 0.05f));
+    // Init Actor Mesh
+    AJones->setMesh(m_device, m_mloader2.meshes);
+    // Init Actor Textures
+    AJones->setTextures(m_jonesyTextures);
+
+    std::string msg = AJones->getName() + "Actor accessed successfully.";
+    MESSAGE("Actor", "Actor", msg.c_str());
+  }
+  else {
+    MESSAGE("Actor", "Actor", "Actor resource not found")
+  }
 
   return S_OK;
 }
@@ -201,7 +199,8 @@ BaseApp::update() {
 
   m_UI.GUITab("ImKerberos Test");
   m_UI.GUITab("Docking Test");
-  m_UI.TransformGUI(*this);
+ // m_UI.TransformGUI(*AKoro->getComponent<Transform>());
+  m_UI.TransformGUI(*AJones->getComponent<Transform>());
 
   // Update our time
   static float t = 0.0f;
@@ -219,9 +218,7 @@ BaseApp::update() {
 
   inputActionMap(t);
 
-  rotation.y = t;
-  rotation.x = t;
-  rotation.z = t;
+  /*//rotation.y = t;
 
   // Update the rotation and color of the object
   XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -229,10 +226,10 @@ BaseApp::update() {
   XMMATRIX traslationMatrix = XMMatrixTranslation(position.x, position.y, position.z);
 
   // Compose the final matrix in the orden: scale -> rotation -> scale
-  m_World = scaleMatrix * rotationMatrix * traslationMatrix;
+  //m_World = scaleMatrix * rotationMatrix * traslationMatrix;
 
   // Update variables that change once per frame
-  cb.mWorld = XMMatrixTranspose(m_World);
+  //cb.mWorld = XMMatrixTranspose(m_World);
 
   m_vMeshColor = XMFLOAT4(
     // Modify the color
@@ -243,18 +240,20 @@ BaseApp::update() {
   );
 
   // Update constant buffers
-  cb.vMeshColor = m_vMeshColor;
-  m_changesEveryFrame.update(m_deviceContext, 0, nullptr, &cb, 0, 0);
+  //cb.vMeshColor = m_vMeshColor;
+  //m_changesEveryFrame.update(m_deviceContext, 0, nullptr, &cb, 0, 0);*/
 
   // Initialize the projection matrix
   float FOV = XMConvertToRadians(90.0f);
-  //m_Projection = XMMatrixPerspectiveFovLH(XM_PIDIV4, m_window.m_width / (float)m_window.m_height, 0.01f, 100.0f);
   m_Projection = XMMatrixPerspectiveFovLH(FOV, m_window.m_width / (float)m_window.m_height, 0.01f, 10000.0f);
 
   UpdateCamera();
 
   cbChangesOnResize.mProjection = XMMatrixTranspose(m_Projection);
   m_changeOnResize.update(m_deviceContext, 0, nullptr, &cbChangesOnResize, 0, 0);
+
+  AKoro->update(0, m_deviceContext);
+  AJones->update(0, m_deviceContext);
 }
 
 void
@@ -274,22 +273,26 @@ BaseApp::render() {
   // Render the cube
   // Set Buffers and Shaders for pipeline
   m_shaderProgram.render(m_deviceContext);
-  m_vertexBuffer.render(m_deviceContext, 0, 1);
-  m_indexBuffer.render(m_deviceContext, 0, 1, false, DXGI_FORMAT_R32_UINT);
-  m_deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  //m_vertexBuffer.render(m_deviceContext, 0, 1);
+  //m_indexBuffer.render(m_deviceContext, 0, 1, false, DXGI_FORMAT_R32_UINT);
+  //m_deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+  // Render the models
+  AKoro->render(m_deviceContext);
+  AJones->render(m_deviceContext);
 
   // Set Constant Buffers and asign Shaders
   // g_deviceContext.m_deviceContext->VSSetShader(g_pVertexShader, NULL, 0);
   m_neverChanges.render(m_deviceContext, 0, 1);
   m_changeOnResize.render(m_deviceContext, 1, 1);
-  m_changesEveryFrame.render(m_deviceContext, 2, 1);
+  //m_changesEveryFrame.render(m_deviceContext, 2, 1);
 
-  m_changesEveryFrame.render(m_deviceContext, 2, 1, true);
-  m_textureRV.render(m_deviceContext, 0, 1);
-  m_samplerState.render(m_deviceContext, 0, 1);
+  //m_changesEveryFrame.render(m_deviceContext, 2, 1, true);
+  //m_textureRV.render(m_deviceContext, 0, 1);
+  //m_samplerState.render(m_deviceContext, 0, 1);
 
   // Drawing
-  m_deviceContext.DrawIndexed(MC.m_index.size(), 0, 0);
+  //m_deviceContext.DrawIndexed(MC.m_index.size(), 0, 0);
 
   // Render the UI
   m_UI.render();
@@ -301,14 +304,15 @@ BaseApp::render() {
 void
 BaseApp::destroy() {
   if (m_deviceContext.m_deviceContext) m_deviceContext.m_deviceContext->ClearState();
-  
-  m_samplerState.destroy();
-  m_textureRV.destroy();
+  AKoro->destroy();
+
+  /*m_samplerState.destroy();
+  m_textureRV.destroy();*/
   m_changeOnResize.destroy();
   m_changesEveryFrame.destroy();
   m_neverChanges.destroy();
-  m_indexBuffer.destroy();
-  m_vertexBuffer.destroy();
+  //m_indexBuffer.destroy();
+  //m_vertexBuffer.destroy();
   m_shaderProgram.destroy();
   m_depthStencil.destroy();
   m_depthStencilView.destroy();
@@ -401,24 +405,24 @@ BaseApp::inputActionMap(float deltaTime) {
   float m_speed = 0.001f;
   float moveSpeedCamera = 0.01f;
 
-  if (keys[87]) { // 119 minuscula (W)
-    position.y += m_speed * deltaTime;
-  }
-  if (keys[83]) { // 115 minuscula (S)
-    position.y -= m_speed * deltaTime;
-  }
-  if (keys[65]) { // 97 minuscula (A)
-    position.x -= m_speed * deltaTime;
-  }
-  if (keys[68]) { // 100 minuscula (D)
-    position.x += m_speed * deltaTime;
-  }
-  if (keys[81]) { // 113 minuscula (Q)
-    position.z -= m_speed * deltaTime;
-  }
-  if (keys[69]) { // 101 minuscula (E)
-    position.z += m_speed * deltaTime;
-  }
+  //if (keys[87]) { // 119 minuscula (W)
+  //  position.y += m_speed * deltaTime;
+  //}
+  //if (keys[83]) { // 115 minuscula (S)
+  //  position.y -= m_speed * deltaTime;
+  //}
+  //if (keys[65]) { // 97 minuscula (A)
+  //  position.x -= m_speed * deltaTime;
+  //}
+  //if (keys[68]) { // 100 minuscula (D)
+  //  position.x += m_speed * deltaTime;
+  //}
+  //if (keys[81]) { // 113 minuscula (Q)
+  //  position.z -= m_speed * deltaTime;
+  //}
+  //if (keys[69]) { // 101 minuscula (E)
+  //  position.z += m_speed * deltaTime;
+  //}
 
   XMVECTOR pos = XMLoadFloat3(&m_camera.position);
   XMVECTOR forward = XMLoadFloat3(&m_camera.forward);

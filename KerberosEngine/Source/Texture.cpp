@@ -6,8 +6,8 @@
 
 HRESULT
 Texture::init(Device device,
-        const std::string& textureName,
-        ExtensionType extensionType) {
+  const std::string& textureName,
+  ExtensionType extensionType) {
   if (!device.m_device) {
     ERROR("Texture", "init", "Device is nullptr in texture loading method");
     return E_POINTER;
@@ -94,12 +94,12 @@ Texture::init(Device device,
 
 HRESULT
 Texture::init(Device device,
-              unsigned int width,
-              unsigned int height,
-              DXGI_FORMAT Format,
-              unsigned int BindFlags,
-              unsigned int sampleCount,
-              unsigned int qualityLevels) {
+  unsigned int width,
+  unsigned int height,
+  DXGI_FORMAT Format,
+  unsigned int BindFlags,
+  unsigned int sampleCount,
+  unsigned int qualityLevels) {
   if (!device.m_device) {
     ERROR("Texture", "init", "Device is nullptr in texture inicialization method");
     return E_POINTER;
@@ -132,14 +132,14 @@ Texture::init(Device device,
   return hr;
 }
 
-void 
+void
 Texture::update() {
 }
 
-void 
-Texture::render(DeviceContext& deviceContext, 
-                unsigned int StartSlot, 
-                unsigned int NumViews) {
+void
+Texture::render(DeviceContext& deviceContext,
+  unsigned int StartSlot,
+  unsigned int NumViews) {
   if (m_textureFromImg) {
     ID3D11ShaderResourceView* nullSRV[] = { nullptr };
     deviceContext.PSSetShaderResources(StartSlot, NumViews, nullSRV);
@@ -150,8 +150,12 @@ Texture::render(DeviceContext& deviceContext,
   }
 }
 
-void 
+void
 Texture::destroy() {
-  SAFE_RELEASE(m_texture);
-  SAFE_RELEASE(m_textureFromImg);
+  if (m_texture != nullptr) {
+    SAFE_RELEASE(m_texture);
+  }
+  else if (m_textureFromImg != nullptr) {
+    SAFE_RELEASE(m_textureFromImg);
+  }
 }
