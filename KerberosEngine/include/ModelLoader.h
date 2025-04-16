@@ -13,37 +13,41 @@ public:
   ~ModelLoader() = default;
 
   /**
-   * @brief
+   * @brief Initializes the FBX manager, IO settings, and creates a new scene.
    */
   bool
   InitializeFBXManager();
 
   /**
-   * @brief
+   * @brief Loads an FBX model from a given file path and processes its contents.
+   * @param filePath Path to the .fbx file to load.
    */
   bool
   LoadFBXModel(const std::string& filePath);
 
   /**
-   * @brief
+   * @brief Uses recusivity to process a node in the FBX scene graph.
+   * @param node Pointer to the FBX node to process.
    */
   void
   ProcessFBXNode(FbxNode* node);
 
   /**
-   * @brief
+   * @brief Extracts vertex, index, and UV data from a mesh node.
+   * @param node Node containing the mesh to process.
    */
   void
   ProcessFBXMesh(FbxNode* node);
 
   /**
-   * @brief
+   * @brief Extracts texture file names from a surface material.
+   * @param material Pointer to the FBX surface material to extract data from.
    */
   void
   ProcessFBXMaterials(FbxSurfaceMaterial* material);
 
   /**
-   * @brief
+   * @brief  Returns the list of texture file names from the FBX.
    */
   std::vector<std::string>
   GetTextureFileNames() const { return textureFileNames; }

@@ -2,36 +2,37 @@
 #include "Prerequisites.h"
 #include "Component.h"
 
+// Forward Declarations
 class DeviceContext;
 
 class
-  Entity {
+Entity {
 public:
   /**
-   * @brief Destructor virtual.
+   * @brief Virtual destructor.
    */
   virtual
     ~Entity() = default;
 
   /**
-   * @brief Método virtual puro para actualizar la entidad.
-   * @param deltaTime El tiempo transcurrido desde la última actualización.
-   * @param deviceContext Contexto del dispositivo para operaciones gráficas.
+   * @brief Pure virtual method to update the entity.
+   * @param deltaTime Time elapsed since the last update.
+   * @param deviceContext The device context for graphical operations.
    */
   virtual void
     update(float deltaTime, DeviceContext& deviceContext) = 0;
 
   /**
-   * @brief Método virtual puro para renderizar la entidad.
-   * @param deviceContext Contexto del dispositivo para operaciones gráficas.
+   * @brief Pure virtual method to render the entity.
+   * @param deviceContext The device context for graphic operations.
    */
   virtual void
     render(DeviceContext& deviceContext) = 0;
 
   /**
-   * @brief Agrega un componente a la entidad.
-   * @tparam T Tipo del componente, debe derivar de Component.
-   * @param component Puntero compartido al componente que se va a agregar.
+   * @brief Adds a component to the entity.
+   * @tparam T The component type, must derive from Component.
+   * @param component Shared pointer to the component to add.
    */
   template <typename T>
   void addComponent(EngineUtilities::TSharedPointer<T> component) {
@@ -40,9 +41,9 @@ public:
   }
 
   /**
-   * @brief Obtiene un componente de la entidad.
-   * @tparam T Tipo del componente que se va a obtener.
-   * @return Puntero compartido al componente, o nullptr si no se encuentra.
+   * @brief Retrieves a component from the entity.
+   * @tparam T The type of component to retrieve.
+   * @return Shared pointer to the component, or nullptr if not found.
    */
   template<typename T>
   EngineUtilities::TSharedPointer<T>

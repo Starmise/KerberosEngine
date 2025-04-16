@@ -80,6 +80,9 @@ public:
   void
   setScale(const EngineUtilities::Vector3& newScale) { scale = newScale; }
 
+  /*
+  * @brief Sets the transformation values; position, rotation and scale
+  */
   void
   setTransform(const EngineUtilities::Vector3& newPos, 
                const EngineUtilities::Vector3& newRot,

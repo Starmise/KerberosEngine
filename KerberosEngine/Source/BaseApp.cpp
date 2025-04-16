@@ -71,36 +71,13 @@ BaseApp::init() {
   }
 
   // Create the constant buffers
-    // bd.ByteWidth = sizeof(CBChangeOnResize);
   hr = m_neverChanges.init(m_device, sizeof(CBNeverChanges));
   if (FAILED(hr))
     return hr;
 
-  // bd.ByteWidth = sizeof(CBChangesEveryFrame);
   hr = m_changeOnResize.init(m_device, sizeof(CBChangeOnResize));
   if (FAILED(hr))
     return hr;
-
-  // Load the Texture
-  /*hr = m_changesEveryFrame.init(m_device, sizeof(CBChangesEveryFrame));
-  if (FAILED(hr))
-    return hr;*/
-
-  //hr = m_textureRV.init(m_device, "seafloor.dds", DDS);
-  //if (FAILED(hr))
-  //  return hr;
-
-  //// Create the sample state
-  //hr = m_samplerState.init(m_device);
-  //if (FAILED(hr))
-  //  return hr;
-
-  /*// Initialize the world matrices
-  scale.x = 1.0f;
-  scale.y = 1.0f;
-  scale.z = 1.0f;
-
-  //m_World = XMMatrixIdentity();*/
 
   // Initialize the view matrix
   XMVECTOR Eye = XMVectorSet(0.0f, 3.0f, -6.0f, 0.0f);
@@ -133,7 +110,7 @@ BaseApp::init() {
   m_koroTextures.push_back(color_ojos_copia);
   m_koroTextures.push_back(m_default);
 
-  m_mloader.LoadFBXModel("Models/Koro.fbx");
+  m_mloader.LoadFBXModel("Models/Omni.fbx");
   AKoro = EngineUtilities::MakeShared<Actor>(m_device);
   if (!AKoro.isNull()) {
     // Init Transform
@@ -168,7 +145,6 @@ BaseApp::init() {
   m_jonesyTextures.push_back(head);
   m_jonesyTextures.push_back(headN);
   m_jonesyTextures.push_back(hair);
-  m_jonesyTextures.push_back(m_default);
 
   m_mloader2.LoadFBXModel("Models/Jonesy FBX Export3.fbx");
   AJones = EngineUtilities::MakeShared<Actor>(m_device);
@@ -218,31 +194,6 @@ BaseApp::update() {
 
   inputActionMap(t);
 
-  /*//rotation.y = t;
-
-  // Update the rotation and color of the object
-  XMMATRIX scaleMatrix = XMMatrixScaling(scale.x, scale.y, scale.z);
-  XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYaw(rotation.x, rotation.y, rotation.z);
-  XMMATRIX traslationMatrix = XMMatrixTranslation(position.x, position.y, position.z);
-
-  // Compose the final matrix in the orden: scale -> rotation -> scale
-  //m_World = scaleMatrix * rotationMatrix * traslationMatrix;
-
-  // Update variables that change once per frame
-  //cb.mWorld = XMMatrixTranspose(m_World);
-
-  m_vMeshColor = XMFLOAT4(
-    // Modify the color
-    m_vMeshColor.x = (sinf(t * 1.0f) + 1.0f) * 0.5f,
-    m_vMeshColor.y = (cosf(t * 3.0f) + 1.0f) * 0.5f,
-    m_vMeshColor.z = (sinf(t * 5.0f) + 1.0f) * 0.5f,
-    1.0f
-  );
-
-  // Update constant buffers
-  //cb.vMeshColor = m_vMeshColor;
-  //m_changesEveryFrame.update(m_deviceContext, 0, nullptr, &cb, 0, 0);*/
-
   // Initialize the projection matrix
   float FOV = XMConvertToRadians(90.0f);
   m_Projection = XMMatrixPerspectiveFovLH(FOV, m_window.m_width / (float)m_window.m_height, 0.01f, 10000.0f);
@@ -271,25 +222,15 @@ BaseApp::render() {
   m_depthStencilView.render(m_deviceContext);
 
   // Render the cube
-  // Set Buffers and Shaders for pipeline
   m_shaderProgram.render(m_deviceContext);
-  //m_vertexBuffer.render(m_deviceContext, 0, 1);
-  //m_indexBuffer.render(m_deviceContext, 0, 1, false, DXGI_FORMAT_R32_UINT);
-  //m_deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
   // Render the models
   AKoro->render(m_deviceContext);
   AJones->render(m_deviceContext);
 
   // Set Constant Buffers and asign Shaders
-  // g_deviceContext.m_deviceContext->VSSetShader(g_pVertexShader, NULL, 0);
   m_neverChanges.render(m_deviceContext, 0, 1);
   m_changeOnResize.render(m_deviceContext, 1, 1);
-  //m_changesEveryFrame.render(m_deviceContext, 2, 1);
-
-  //m_changesEveryFrame.render(m_deviceContext, 2, 1, true);
-  //m_textureRV.render(m_deviceContext, 0, 1);
-  //m_samplerState.render(m_deviceContext, 0, 1);
 
   // Drawing
   //m_deviceContext.DrawIndexed(MC.m_index.size(), 0, 0);
@@ -306,13 +247,9 @@ BaseApp::destroy() {
   if (m_deviceContext.m_deviceContext) m_deviceContext.m_deviceContext->ClearState();
   AKoro->destroy();
 
-  /*m_samplerState.destroy();
-  m_textureRV.destroy();*/
   m_changeOnResize.destroy();
   m_changesEveryFrame.destroy();
   m_neverChanges.destroy();
-  //m_indexBuffer.destroy();
-  //m_vertexBuffer.destroy();
   m_shaderProgram.destroy();
   m_depthStencil.destroy();
   m_depthStencilView.destroy();

@@ -13,31 +13,31 @@ public:
   Component() = default;
 
   /**
-    * @brief Constructor con tipo de componente.
-    * @param type Tipo del componente.
-    */
+  * @brief Constructor with component type.
+  * @param type Type of the component.
+  */
   Component(const ComponentType type) : m_type(type) {}
 
   virtual
   ~Component() = default;
 
   /*
-  * @brief Método virtual puro para actualizar el componente
-  * @param deltaTime Tiempo transcurrido desde la última actualización
+  * @brief Pure virtual method to update the component.
+  * @param deltaTime Time elapsed since the last update.
   */
   virtual void
   update(float deltaTime) = 0;
 
   /*
-  * @brief Método virtual puro para renderizar el componente
-  * @param Window Contexto del dispositivo para operaciones gráficas
+  * @brief Pure virtual method to render the component.
+  * @param deviceContext The device context for graphic operations.
   */
   virtual void
   render(DeviceContext& deviceContext) = 0;
 
   /*
-  * @brief Obtiene el tipo de componente
-  * @return El tipo del componente
+  * @brief Gets the component type.
+  * @return The type of the component.
   */
   ComponentType 
   getType()
