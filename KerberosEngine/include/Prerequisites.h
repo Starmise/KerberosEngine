@@ -120,3 +120,12 @@ struct
   }
 };
 
+struct 
+  LoadDataOBJ {
+  std::string name;
+  std::vector <SimpleVertex> vertex;
+  std::vector <unsigned int> index;
+  int numVertex;
+  int numIndex;
+};
+

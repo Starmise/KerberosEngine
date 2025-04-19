@@ -185,6 +185,9 @@
     <ClInclude Include="include\ECS\Transform.h">
       <Filter>Include\ECS</Filter>
     </ClInclude>
+    <ClInclude Include="include\OBJ_Loader.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />

@@ -1,4 +1,5 @@
 #include "ModelLoader.h"
+#include "OBJ_Loader.h"
 
 bool
 ModelLoader::InitializeFBXManager() {
@@ -176,4 +177,37 @@ ModelLoader::ProcessFBXMaterials(FbxSurfaceMaterial* material) {
       }
     }
   }
+}
+
+LoadDataOBJ 
+ModelLoader::LoadOBJ(std::string objFileName) {
+  LoadDataOBJ LD; 
+  objl::Loader loader;
+
+  loader.LoadFile(objFileName);
+  LD.name = objFileName;
+
+  // Load and set data to custom structure
+  LD.vertex.resize(loader.LoadedVertices.size());
+
+  for (int i = 0; i < LD.vertex.size(); i++) 
+  {
+    LD.vertex[i].Pos.x = loader.LoadedVertices[i].Position.X;
+    LD.vertex[i].Pos.y = loader.LoadedVertices[i].Position.Y;
+    LD.vertex[i].Pos.z = loader.LoadedVertices[i].Position.Z;
+
+    LD.vertex[i].Tex.x = loader.LoadedVertices[i].TextureCoordinate.X;
+    LD.vertex[i].Tex.y = loader.LoadedVertices[i].TextureCoordinate.Y;
+  }
+
+  LD.index.resize(loader.LoadedIndices.size());
+  for (int i = 0; i < LD.index.size(); i++) 
+  {
+    LD.index[i] = loader.LoadedIndices[i];
+  }
+
+  LD.numVertex = LD.vertex.size();
+  LD.numIndex = LD.index.size();
+
+  return LD;
 }

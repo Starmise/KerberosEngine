@@ -52,6 +52,9 @@ public:
   std::vector<std::string>
   GetTextureFileNames() const { return textureFileNames; }
 
+  LoadDataOBJ
+  LoadOBJ(std::string objFileName);
+
 private:
   FbxManager* lSdkManager;
   FbxScene* lScene;
