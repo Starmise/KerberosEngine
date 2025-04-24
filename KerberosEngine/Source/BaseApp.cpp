@@ -165,27 +165,35 @@ BaseApp::init() {
     MESSAGE("Actor", "Actor", "Actor resource not found")
   }
 
-  Texture colorPistol;
-  colorPistol.init(m_device, "Textures/pistol/base_albedo.png", ExtensionType::PNG);
-  m_pistolTextures.push_back(colorPistol);
+  m_mloader3.LoadOBJ_model("Models/untitled.obj");
+  MESSAGE("ModelLoader", "Pistol", ("Meshes loaded: " + std::to_string(m_mloader3.meshes.size())).c_str());
 
-  m_mloader3.LoadOBJ("drakefire_pistol.obj");
+  m_pistolTextures.clear();
+  for (size_t i = 0; i < m_mloader3.meshes.size(); ++i) {
+    Texture pistol;
+    HRESULT texResult = pistol.init(m_device, "Textures/pistol/T_Pistol_HandCannon_D.png", PNG);
+
+    if (FAILED(texResult)) {
+      ERROR("Texture", "T_Pistol_HandCannon_D", "Failed to load texture for submesh.");
+    }
+    m_pistolTextures.push_back(pistol);
+  }
+
   APistol = EngineUtilities::MakeShared<Actor>(m_device);
   if (!APistol.isNull()) {
     // Init Transform
-    APistol->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(2.0f, 1.0f, 1.0f),
-      EngineUtilities::Vector3(XM_PI / -2.0f, 0.0f, XM_PI / 2.0f),
-      EngineUtilities::Vector3(1.0f, 1.0f, 1.0f));
+    APistol->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-5.0, -1.0f, 0.5f),
+      EngineUtilities::Vector3(0.0f, 1.3f, 0.0f),
+      EngineUtilities::Vector3(4.5f, 4.5f, 4.5f));
     // Init Actor Mesh
     APistol->setMesh(m_device, m_mloader3.meshes);
     // Init Actor Textures
     APistol->setTextures(m_pistolTextures);
 
-    std::string msg = APistol->getName() + "Actor OBJ accessed successfully.";
-    MESSAGE("Actor", "Actor", msg.c_str());
+    MESSAGE("Actor", "APistol", (APistol->getName() + " - Actor accessed successfully.").c_str());
   }
   else {
-    MESSAGE("Actor", "Actor", "Actor resource not found")
+    ERROR("Actor", "APistol", "Failed to create actor.");
   }
 
   return S_OK;

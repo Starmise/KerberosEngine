@@ -179,6 +179,37 @@ ModelLoader::ProcessFBXMaterials(FbxSurfaceMaterial* material) {
   }
 }
 
+bool ModelLoader::LoadOBJ_model(const std::string& filePath) {
+  objl::Loader loader;
+  if (!loader.LoadFile(filePath)) {
+    ERROR("ModelLoader", "LoadOBJ_model", "No se pudo cargar el archivo OBJ: " << filePath.c_str());
+    return false;
+  }
+
+  meshes.clear();
+
+  for (const auto& mesh : loader.LoadedMeshes) {
+    MeshComponent meshData;
+    meshData.m_name = mesh.MeshName;
+
+    for (const auto& v : mesh.Vertices) {
+      SimpleVertex sv;
+      sv.Pos = XMFLOAT3(v.Position.X, v.Position.Y, v.Position.Z);
+      sv.Tex = XMFLOAT2(v.TextureCoordinate.X, -v.TextureCoordinate.Y); // invertir eje Y de textura
+      meshData.m_vertex.push_back(sv);
+    }
+
+    meshData.m_index = mesh.Indices;
+    meshData.m_numVertex = meshData.m_vertex.size();
+    meshData.m_numIndex = meshData.m_index.size();
+
+    meshes.push_back(meshData);
+    MESSAGE("ModelLoader", "OBJ", ("Submesh OBJ: " + meshData.m_name).c_str());
+  }
+
+  return true;
+}
+
 LoadDataOBJ 
 ModelLoader::LoadOBJ(std::string objFileName) {
   LoadDataOBJ LD; 

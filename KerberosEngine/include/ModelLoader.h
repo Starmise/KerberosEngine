@@ -52,6 +52,17 @@ public:
   std::vector<std::string>
   GetTextureFileNames() const { return textureFileNames; }
 
+  /**
+  * @brief Uses the `objl::Loader` to parse the file and extract mesh data.
+  * @param filePath The path to the .obj file to load.
+  */
+  bool 
+  LoadOBJ_model(const std::string& filePath);
+
+  /**
+   * @brief Loads an OBJ model and returns the data as a LoadDataOBJ structure.
+   * @param objFileName Path to the .obj file to load.
+   */
   LoadDataOBJ
   LoadOBJ(std::string objFileName);
 
