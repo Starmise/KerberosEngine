@@ -110,7 +110,7 @@ BaseApp::init() {
   m_koroTextures.push_back(color_ojos_copia);
   m_koroTextures.push_back(m_default);
 
-  m_mloader.LoadFBXModel("Models/Omni.fbx");
+  m_mloader.LoadFBXModel("Models/Koro.fbx");
   AKoro = EngineUtilities::MakeShared<Actor>(m_device);
   if (!AKoro.isNull()) {
     // Init Transform
@@ -165,6 +165,37 @@ BaseApp::init() {
     MESSAGE("Actor", "Actor", "Actor resource not found")
   }
 
+  m_mloader3.LoadOBJ_model("Models/untitled.obj");
+  MESSAGE("ModelLoader", "Pistol", ("Meshes loaded: " + std::to_string(m_mloader3.meshes.size())).c_str());
+
+  m_pistolTextures.clear();
+  for (size_t i = 0; i < m_mloader3.meshes.size(); ++i) {
+    Texture pistol;
+    HRESULT texResult = pistol.init(m_device, "Textures/pistol/T_Pistol_HandCannon_D.png", PNG);
+
+    if (FAILED(texResult)) {
+      ERROR("Texture", "T_Pistol_HandCannon_D", "Failed to load texture for submesh.");
+    }
+    m_pistolTextures.push_back(pistol);
+  }
+
+  APistol = EngineUtilities::MakeShared<Actor>(m_device);
+  if (!APistol.isNull()) {
+    // Init Transform
+    APistol->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-5.0, -1.0f, 0.5f),
+      EngineUtilities::Vector3(0.0f, 1.3f, 0.0f),
+      EngineUtilities::Vector3(4.5f, 4.5f, 4.5f));
+    // Init Actor Mesh
+    APistol->setMesh(m_device, m_mloader3.meshes);
+    // Init Actor Textures
+    APistol->setTextures(m_pistolTextures);
+
+    MESSAGE("Actor", "APistol", (APistol->getName() + " - Actor accessed successfully.").c_str());
+  }
+  else {
+    ERROR("Actor", "APistol", "Failed to create actor.");
+  }
+
   return S_OK;
 }
 
@@ -176,7 +207,7 @@ BaseApp::update() {
   m_UI.GUITab("ImKerberos Test");
   m_UI.GUITab("Docking Test");
  // m_UI.TransformGUI(*AKoro->getComponent<Transform>());
-  m_UI.TransformGUI(*AJones->getComponent<Transform>());
+  m_UI.TransformGUI(*APistol->getComponent<Transform>());
 
   // Update our time
   static float t = 0.0f;
@@ -205,6 +236,7 @@ BaseApp::update() {
 
   AKoro->update(0, m_deviceContext);
   AJones->update(0, m_deviceContext);
+  APistol->update(0, m_deviceContext);
 }
 
 void
@@ -227,6 +259,7 @@ BaseApp::render() {
   // Render the models
   AKoro->render(m_deviceContext);
   AJones->render(m_deviceContext);
+  APistol->render(m_deviceContext);
 
   // Set Constant Buffers and asign Shaders
   m_neverChanges.render(m_deviceContext, 0, 1);

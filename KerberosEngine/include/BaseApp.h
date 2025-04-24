@@ -110,13 +110,16 @@ private:
   Buffer                              m_changesEveryFrame;
   UserInterface                       m_UI;
 
+  Texture m_default;
   ModelLoader                         m_mloader;
   EngineUtilities::TSharedPointer<Actor> AKoro;
   std::vector<Texture>                m_koroTextures;
-  Texture m_default;
   ModelLoader                         m_mloader2;
   EngineUtilities::TSharedPointer<Actor> AJones;
   std::vector<Texture>                m_jonesyTextures;
+  ModelLoader                         m_mloader3;
+  EngineUtilities::TSharedPointer<Actor> APistol;
+  std::vector<Texture>                m_pistolTextures;
 
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
