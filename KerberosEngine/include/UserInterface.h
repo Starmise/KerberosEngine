@@ -2,6 +2,7 @@
 #include "Prerequisites.h"
 #include "ImGuizmo.h"
 #include "ECS/Transform.h"
+#include "ECS/Actor.h"
 
 // Forward Declarations
 class Window;
@@ -61,6 +62,9 @@ public:
   void
   TransformGUI(Transform& transform);
 
+  void
+  ActorsTransform(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors);
+
   /**
    * @brief Allows you to manipulate three float values in the GUI
    * @param label Label to be displayed next to the control.
@@ -75,4 +79,5 @@ public:
              float columnWidth = 100.0f);
 
 private:
+  EngineUtilities::TSharedPointer<Actor> m_actors;
 };

@@ -116,12 +116,16 @@ private:
   std::vector<Texture>                m_koroTextures;
 
   ModelLoader                         m_mloader2;
-  EngineUtilities::TSharedPointer<Actor> ASlim;
-  std::vector<Texture>                m_SlimTextures;
+  EngineUtilities::TSharedPointer<Actor> AMorgana;
+  std::vector<Texture>                m_morganaTextures;
 
   ModelLoader                         m_mloader3;
   EngineUtilities::TSharedPointer<Actor> APistol;
   std::vector<Texture>                m_pistolTextures;
+
+  ModelLoader                         m_mloader4;
+  EngineUtilities::TSharedPointer<Actor> ADigimon;
+  std::vector<Texture>                m_digiTextures;
 
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
@@ -130,6 +134,7 @@ private:
   CBChangeOnResize cbChangesOnResize;
 
   Camera m_camera;
+  std::vector<EngineUtilities::TSharedPointer<Actor>> m_actors;
 
 public:
   bool keys[256] = { false };

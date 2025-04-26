@@ -153,6 +153,38 @@ UserInterface::TransformGUI(Transform& transform) {
   ImGui::End();
 }
 
+void 
+UserInterface::ActorsTransform(const std::vector<EngineUtilities::TSharedPointer<Actor>>& actors) {
+  ImGui::Begin("Transforms");
+
+  for (size_t i = 0; i < actors.size(); ++i) {
+    auto actor = actors[i];
+    if (actor.isNull()) continue; // Saltamos si el actor es inválido
+
+    // Mostramos nombre o índice para identificar cada transform
+    std::string actorLabel = "Actor " + std::to_string(i+1);
+    if (ImGui::CollapsingHeader(actorLabel.c_str())) { // Mejor UI: cada actor se despliega
+      auto transform = actor->getComponent<Transform>();
+        EngineUtilities::Vector3 position = transform->getPosition();
+        EngineUtilities::Vector3 rotation = transform->getRotation();
+        EngineUtilities::Vector3 scale = transform->getScale();
+
+        if (ImGui::DragFloat3(("Position##" + std::to_string(i)).c_str(), &position.x, 0.1f)) {
+          transform->setPosition(position);
+        }
+        if (ImGui::DragFloat3(("Rotation##" + std::to_string(i)).c_str(), &rotation.x, 0.1f)) {
+          transform->setRotation(rotation);
+        }
+        if (ImGui::DragFloat3(("Scale##" + std::to_string(i)).c_str(), &scale.x, 0.1f)) {
+          transform->setScale(scale);
+        }
+    }
+  }
+
+  ImGui::End();
+}
+
+
 void
 UserInterface::vec3Control(const std::string& label, 
                                 float* values, 
@@ -197,6 +229,19 @@ UserInterface::vec3Control(const std::string& label,
 
   ImGui::SameLine();
   ImGui::DragFloat("##Y", &values[1], 0.1f, 0.0f, 0.0f, "%.2f");
+  ImGui::PopItemWidth();
+  ImGui::SameLine();
+
+  ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+  ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
+  ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
+  ImGui::PushFont(boldFont);
+  if (ImGui::Button("Z", buttonSize)) values[2] = resetValues;
+  ImGui::PopFont();
+  ImGui::PopStyleColor(3);
+
+  ImGui::SameLine();
+  ImGui::DragFloat("##Z", &values[2], 0.1f, 0.0f, 0.0f, "%.2f");
   ImGui::PopItemWidth();
   ImGui::SameLine();
 
