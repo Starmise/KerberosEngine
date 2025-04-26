@@ -114,9 +114,11 @@ private:
   ModelLoader                         m_mloader;
   EngineUtilities::TSharedPointer<Actor> AKoro;
   std::vector<Texture>                m_koroTextures;
+
   ModelLoader                         m_mloader2;
-  EngineUtilities::TSharedPointer<Actor> AJones;
-  std::vector<Texture>                m_jonesyTextures;
+  EngineUtilities::TSharedPointer<Actor> ASlim;
+  std::vector<Texture>                m_SlimTextures;
+
   ModelLoader                         m_mloader3;
   EngineUtilities::TSharedPointer<Actor> APistol;
   std::vector<Texture>                m_pistolTextures;

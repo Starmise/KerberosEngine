@@ -90,33 +90,56 @@ BaseApp::init() {
 
   // Set model actor
   // Load Textures
+  Texture cuerpo;
+  cuerpo.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture ojos;
+  ojos.init(m_device, "Textures/Koro/color_ojos.png", ExtensionType::PNG);
+  Texture dientes;
+  dientes.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture dientes2;
+  dientes2.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture almohadillas;
+  almohadillas.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture lengua;
+  lengua.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture cuerpo2;
+  cuerpo2.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture chaleco;
+  chaleco.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture cordones;
+  cordones.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture botones;
+  botones.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture alas;
+  alas.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  Texture collar;
+  collar.init(m_device, "Textures/Koro/banda.png", ExtensionType::PNG);
   Texture banda;
   banda.init(m_device, "Textures/Koro/banda.png", ExtensionType::PNG);
 
-  Texture color;
-  color.init(m_device, "Textures/Koro/Color.png", ExtensionType::PNG);
+  //m_default.init(m_device, "Textures/Default.png", ExtensionType::PNG);
 
-  Texture color_ojos;
-  color_ojos.init(m_device, "Textures/Koro/color_ojos.png", ExtensionType::PNG);
-
-  Texture color_ojos_copia;
-  color_ojos_copia.init(m_device, "Textures/Koro/color_ojos_copia.png", ExtensionType::PNG);
-
-  m_default.init(m_device, "Textures/Default.png", ExtensionType::PNG);
-
+  m_koroTextures.push_back(cuerpo);
+  m_koroTextures.push_back(ojos);
+  m_koroTextures.push_back(dientes);
+  m_koroTextures.push_back(dientes2);
+  m_koroTextures.push_back(almohadillas);
+  m_koroTextures.push_back(lengua);
+  m_koroTextures.push_back(cuerpo2);
+  m_koroTextures.push_back(chaleco);
+  m_koroTextures.push_back(cordones);
+  m_koroTextures.push_back(botones);
+  m_koroTextures.push_back(alas);
+  m_koroTextures.push_back(collar);
   m_koroTextures.push_back(banda);
-  m_koroTextures.push_back(color);
-  m_koroTextures.push_back(color_ojos);
-  m_koroTextures.push_back(color_ojos_copia);
-  m_koroTextures.push_back(m_default);
 
   m_mloader.LoadFBXModel("Models/Koro.fbx");
   AKoro = EngineUtilities::MakeShared<Actor>(m_device);
   if (!AKoro.isNull()) {
     // Init Transform
     AKoro->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(2.0f, 1.0f, 1.0f),
-                                                  EngineUtilities::Vector3(XM_PI / -2.0f, 0.0f, XM_PI / 2.0f),
-                                                  EngineUtilities::Vector3(1.0f, 1.0f, 1.0f));
+      EngineUtilities::Vector3(XM_PI / -2.0f, 0.0f, XM_PI / 2.0f),
+      EngineUtilities::Vector3(1.0f, 1.0f, 1.0f));
     // Init Actor Mesh
     AKoro->setMesh(m_device, m_mloader.meshes);
     // Init Actor Textures
@@ -129,36 +152,83 @@ BaseApp::init() {
     MESSAGE("Actor", "Actor", "Actor resource not found")
   }
 
+
+  // -----Segundo Actor FBX-----
+  m_mloader2.LoadFBXModel("Models/morgana.fbx");
+
   Texture body;
-  body.init(m_device, "Textures/jonesy/M_Med_Soldier_Body_01_C.tga.png", ExtensionType::PNG);
-  Texture bodyN;
-  bodyN.init(m_device, "Textures/jonesy/M_Med_Soldier_Body_01_N.tga.png", ExtensionType::PNG);
-  Texture head;
-  head.init(m_device, "Textures/jonesy/M_Med_Soldier_Head_01_C.tga.png", ExtensionType::PNG);
-  Texture headN;
-  headN.init(m_device, "Textures/jonesy/M_Med_Soldier_Head_01_N.tga.png", ExtensionType::PNG);
-  Texture hair;
-  hair.init(m_device, "Textures/jonesy/M_SML_Survivor_Hair_02_d.tga.png", ExtensionType::PNG);
+  body.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture body1;
+  body1.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture body2;
+  body2.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture body3;
+  body3.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture body4;
+  body4.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture body5;
+  body5.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face;
+  face.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture face1;
+  face1.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture face2;
+  face2.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture face3;
+  face3.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture face4;
+  face4.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture face5;
+  face5.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
+  Texture face6;
+  face6.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face7;
+  face7.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face8;
+  face8.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face9;
+  face9.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face10;
+  face10.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face11;
+  face11.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face12;
+  face12.init(m_device, "Textures/Slim/c0003_t01_face01.png", ExtensionType::PNG);
+  Texture face13;
+  face13.init(m_device, "Textures/Slim/c0003_t01_body01_low.png", ExtensionType::PNG);
 
-  m_jonesyTextures.push_back(body);
-  m_jonesyTextures.push_back(bodyN);
-  m_jonesyTextures.push_back(head);
-  m_jonesyTextures.push_back(headN);
-  m_jonesyTextures.push_back(hair);
+  m_SlimTextures.push_back(body);
+  m_SlimTextures.push_back(body1);
+  m_SlimTextures.push_back(body2);
+  m_SlimTextures.push_back(body3);
+  m_SlimTextures.push_back(body4);
+  m_SlimTextures.push_back(body5);
+  m_SlimTextures.push_back(face);
+  m_SlimTextures.push_back(face1);
+  m_SlimTextures.push_back(face2);
+  m_SlimTextures.push_back(face3);
+  m_SlimTextures.push_back(face4);
+  m_SlimTextures.push_back(face5);
+  m_SlimTextures.push_back(face7);
+  m_SlimTextures.push_back(face8);
+  m_SlimTextures.push_back(face9);
+  m_SlimTextures.push_back(face10);
+  m_SlimTextures.push_back(face11);
+  m_SlimTextures.push_back(face12);
+  m_SlimTextures.push_back(face13);
 
-  m_mloader2.LoadFBXModel("Models/Jonesy FBX Export3.fbx");
-  AJones = EngineUtilities::MakeShared<Actor>(m_device);
-  if (!AJones.isNull()) {
+  ASlim = EngineUtilities::MakeShared<Actor>(m_device);
+  if (!ASlim.isNull()) {
     // Init Transform
-    AJones->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-3.0, -3.0f, 0.5f),
-      EngineUtilities::Vector3(0.0f, 1.3f, 0.0f),
-      EngineUtilities::Vector3(0.05f, 0.05f, 0.05f));
+    ASlim->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-1.2, -5.9f, 2.5f),
+      EngineUtilities::Vector3(-2.0f, 3.43f, 0.0f),
+      EngineUtilities::Vector3(0.1, 0.1, 0.1));
     // Init Actor Mesh
-    AJones->setMesh(m_device, m_mloader2.meshes);
+    ASlim->setMesh(m_device, m_mloader2.meshes);
     // Init Actor Textures
-    AJones->setTextures(m_jonesyTextures);
+    ASlim->setTextures(m_SlimTextures);
 
-    std::string msg = AJones->getName() + "Actor accessed successfully.";
+    std::string msg = ASlim->getName() + "Actor accessed successfully.";
     MESSAGE("Actor", "Actor", msg.c_str());
   }
   else {
@@ -207,7 +277,8 @@ BaseApp::update() {
   m_UI.GUITab("ImKerberos Test");
   m_UI.GUITab("Docking Test");
  // m_UI.TransformGUI(*AKoro->getComponent<Transform>());
-  m_UI.TransformGUI(*APistol->getComponent<Transform>());
+  //m_UI.TransformGUI(*APistol->getComponent<Transform>());
+  m_UI.TransformGUI(*ASlim->getComponent<Transform>());
 
   // Update our time
   static float t = 0.0f;
@@ -235,7 +306,7 @@ BaseApp::update() {
   m_changeOnResize.update(m_deviceContext, 0, nullptr, &cbChangesOnResize, 0, 0);
 
   AKoro->update(0, m_deviceContext);
-  AJones->update(0, m_deviceContext);
+  ASlim->update(0, m_deviceContext);
   APistol->update(0, m_deviceContext);
 }
 
@@ -258,7 +329,7 @@ BaseApp::render() {
 
   // Render the models
   AKoro->render(m_deviceContext);
-  AJones->render(m_deviceContext);
+  ASlim->render(m_deviceContext);
   APistol->render(m_deviceContext);
 
   // Set Constant Buffers and asign Shaders
@@ -279,6 +350,7 @@ void
 BaseApp::destroy() {
   if (m_deviceContext.m_deviceContext) m_deviceContext.m_deviceContext->ClearState();
   AKoro->destroy();
+  ASlim->destroy();
 
   m_changeOnResize.destroy();
   m_changesEveryFrame.destroy();
