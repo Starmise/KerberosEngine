@@ -72,6 +72,7 @@ private:
   std::vector<std::string> textureFileNames;
 public:
   std::vector<MeshComponent> meshes;
+  std::string modelName;
 };
 
 
