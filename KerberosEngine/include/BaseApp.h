@@ -127,6 +127,10 @@ private:
   EngineUtilities::TSharedPointer<Actor> ADigimon;
   std::vector<Texture>                m_digiTextures;
 
+  ModelLoader                         m_mloader5;
+  EngineUtilities::TSharedPointer<Actor> ACerb;
+  std::vector<Texture>                m_cerbTextures;
+
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
 

@@ -308,6 +308,38 @@ BaseApp::init() {
     ERROR("Actor", "Adigi", "Failed to create actor.");
   }
 
+  Texture one;
+  one.init(m_device, "Textures/model_tex_0.png", ExtensionType::PNG);
+  
+  Texture two;
+  two.init(m_device, "Textures/model_tex_1.png", ExtensionType::PNG);
+  
+  Texture three;
+  three.init(m_device, "Textures/model_tex_2.png", ExtensionType::PNG);
+
+  m_cerbTextures.push_back(one);
+  m_cerbTextures.push_back(three);
+  m_cerbTextures.push_back(two);
+
+  m_mloader5.LoadOBJ_model("Models/model.obj");
+  ACerb = EngineUtilities::MakeShared<Actor>(m_device);
+
+  if (!ACerb.isNull()) {
+    ACerb->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(8.5, -3.5, 2.6),
+      EngineUtilities::Vector3(0.0f, 4.2, 0.0f),
+      EngineUtilities::Vector3(0.02f, 0.02f, 0.02f));
+
+    ACerb->setMesh(m_device, m_mloader5.meshes);
+    // Init Actor Textures
+    ACerb->setTextures(m_cerbTextures);
+
+    m_actors.push_back(ACerb);
+    MESSAGE("Actor", "ACerb", (ACerb->getName() + " - Actor accessed successfully.").c_str());
+  }
+  else {
+    ERROR("Actor", "ACerb", "Failed to create actor.");
+  }
+
   return S_OK;
 }
 
@@ -352,6 +384,7 @@ BaseApp::update() {
   AMorgana->update(0, m_deviceContext);
   APistol->update(0, m_deviceContext);
   ADigimon->update(0, m_deviceContext);
+  ACerb->update(0, m_deviceContext);
 }
 
 void
@@ -376,6 +409,7 @@ BaseApp::render() {
   AMorgana->render(m_deviceContext);
   APistol->render(m_deviceContext);
   ADigimon->render(m_deviceContext);
+  ACerb->render(m_deviceContext);
 
   // Set Constant Buffers and asign Shaders
   m_neverChanges.render(m_deviceContext, 0, 1);
@@ -398,6 +432,7 @@ BaseApp::destroy() {
   AMorgana->destroy();
   APistol->destroy();
   ADigimon->destroy();
+  ACerb->destroy();
 
   m_changeOnResize.destroy();
   m_changesEveryFrame.destroy();
