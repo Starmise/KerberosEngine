@@ -58,6 +58,36 @@ Actor::render(DeviceContext& deviceContext) {
 }
 
 void
+Actor::renderShadow(DeviceContext& deviceContext, XMMATRIX shadowMatrix) {
+  m_sampler.render(deviceContext, 0, 1);
+
+  // Update Buffers for each mesh on the actor with shadow settings
+  for (unsigned int i = 0; i < m_meshes.size(); i++) {
+    m_vertexBuffers[i].render(deviceContext, 0, 1);
+    m_indexBuffers[i].render(deviceContext, 0, 1, false, DXGI_FORMAT_R32_UINT);
+
+    if (m_textures.size() > 0) {
+      if (i < m_textures.size()) {
+        m_textures[i].render(deviceContext, 0, 1);
+      }
+    }
+
+    // Update with shadow matrix and color
+    CBChangesEveryFrame shadowCB;
+    shadowCB.mWorld = XMMatrixTranspose(shadowMatrix);
+    shadowCB.vMeshColor = XMFLOAT4(0.0f, 0.0f, 0.0f, 0.5f);
+    shadowCB.isShadow = 0.0f; // Not needed now
+    shadowCB.ShadowMatrix = XMMatrixIdentity();
+
+    m_modelBuffer.update(deviceContext, 0, nullptr, &shadowCB, 0, 0);
+    m_modelBuffer.render(deviceContext, 2, 1, true);
+
+    deviceContext.IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    deviceContext.DrawIndexed(m_meshes[i].m_numIndex, 0, 0);
+  }
+}
+
+void
 Actor::destroy() {
   for (auto& vertexBuffer : m_vertexBuffers) {
     vertexBuffer.destroy();

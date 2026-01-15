@@ -85,7 +85,28 @@ BaseApp::init() {
   XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
   m_View = XMMatrixLookAtLH(Eye, At, Up);
 
+  // Set camera position and orientation
+  m_camera.position = XMFLOAT3(0.0f, 3.0f, -6.0f);
+  m_camera.target = XMFLOAT3(0.0f, 1.0f, 0.0f);
+  m_camera.up = XMFLOAT3(0.0f, 1.0f, 0.0f);
+  XMVECTOR forward = XMVector3Normalize(At - Eye);
+  XMStoreFloat3(&m_camera.forward, forward);
+  XMVECTOR right = XMVector3Cross(forward, Up);
+  XMStoreFloat3(&m_camera.right, XMVector3Normalize(right));
+
   m_UI.init(m_window.m_hWnd, m_device.m_device, m_deviceContext.m_deviceContext);
+
+  // Initialize blend state for shadows
+  hr = m_blendState.init(m_device);
+  if (FAILED(hr)) {
+    return hr;
+  }
+
+  // Initialize depth stencil state for shadows (disable depth test and write)
+  hr = m_shadowDepthStencilState.init(m_device, false, D3D11_DEPTH_WRITE_MASK_ZERO, D3D11_COMPARISON_ALWAYS, false);
+  if (FAILED(hr)) {
+    return hr;
+  }
 
 
   // Set model actor
@@ -221,7 +242,7 @@ BaseApp::init() {
   AMorgana = EngineUtilities::MakeShared<Actor>(m_device);
   if (!AMorgana.isNull()) {
     // Init Transform
-    AMorgana->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-1.2, -5.9f, 2.5f),
+    AMorgana->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-1.2, 1.0f, 2.5f),
       EngineUtilities::Vector3(-2.0f, 3.43f, 0.0f),
       EngineUtilities::Vector3(0.1, 0.1, 0.1));
     // Init Actor Mesh
@@ -257,7 +278,7 @@ BaseApp::init() {
   APistol = EngineUtilities::MakeShared<Actor>(m_device);
   if (!APistol.isNull()) {
     // Init Transform
-    APistol->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-5.0, -1.0f, 0.5f),
+    APistol->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(-5.0, 2.0f, 0.5f),
       EngineUtilities::Vector3(0.0f, 1.3f, 0.0f),
       EngineUtilities::Vector3(4.5f, 4.5f, 4.5f));
     // Init Actor Mesh
@@ -292,7 +313,7 @@ BaseApp::init() {
   ADigimon = EngineUtilities::MakeShared<Actor>(m_device);
   if (!ADigimon.isNull()) {
     // Init Transform
-    ADigimon->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(8.5, -3.5, 2.6),
+    ADigimon->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(8.5, 2.5, 2.6),
       EngineUtilities::Vector3(0.0f, 4.2, 0.0f),
       EngineUtilities::Vector3(2.0f, 2.0f, 2.0f));
     // Init Actor Mesh
@@ -325,7 +346,7 @@ BaseApp::init() {
   ACerb = EngineUtilities::MakeShared<Actor>(m_device);
 
   if (!ACerb.isNull()) {
-    ACerb->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(8.5, -3.5, 2.6),
+    ACerb->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(8.5, 3.5, 2.6),
       EngineUtilities::Vector3(0.0f, 4.2, 0.0f),
       EngineUtilities::Vector3(0.02f, 0.02f, 0.02f));
 
@@ -338,6 +359,40 @@ BaseApp::init() {
   }
   else {
     ERROR("Actor", "ACerb", "Failed to create actor.");
+  }
+
+  // Create Plane
+  MeshComponent planeMesh;
+  planeMesh.m_name = "Plane";
+  planeMesh.m_vertex = {
+    { XMFLOAT3(-20.0f, 0.0f, -20.0f), XMFLOAT2(0.0f, 0.0f) },
+    { XMFLOAT3(20.0f, 0.0f, -20.0f), XMFLOAT2(1.0f, 0.0f) },
+    { XMFLOAT3(20.0f, 0.0f, 20.0f), XMFLOAT2(1.0f, 1.0f) },
+    { XMFLOAT3(-20.0f, 0.0f, 20.0f), XMFLOAT2(0.0f, 1.0f) }
+  };
+  planeMesh.m_index = { 0, 2, 1, 0, 3, 2 };
+  planeMesh.m_numVertex = 4;
+  planeMesh.m_numIndex = 6;
+
+  std::vector<MeshComponent> planeMeshes = { planeMesh };
+
+  Texture planeTexture;
+  planeTexture.init(m_device, "Textures/Default.png", ExtensionType::PNG);
+  m_planeTextures.push_back(planeTexture);
+
+  APlane = EngineUtilities::MakeShared<Actor>(m_device);
+  if (!APlane.isNull()) {
+    APlane->getComponent<Transform>()->setTransform(EngineUtilities::Vector3(0.0f, 0.0f, 0.0f),
+      EngineUtilities::Vector3(0.0f, 0.0f, 0.0f),
+      EngineUtilities::Vector3(1.0f, 1.0f, 1.0f));
+    APlane->setMesh(m_device, planeMeshes);
+    APlane->setTextures(m_planeTextures);
+
+    m_actors.push_back(APlane);
+    MESSAGE("Actor", "APlane", (APlane->getName() + " - Actor accessed successfully.").c_str());
+  }
+  else {
+    ERROR("Actor", "APlane", "Failed to create actor.");
   }
 
   return S_OK;
@@ -385,6 +440,7 @@ BaseApp::update() {
   APistol->update(0, m_deviceContext);
   ADigimon->update(0, m_deviceContext);
   ACerb->update(0, m_deviceContext);
+  APlane->update(0, m_deviceContext);
 }
 
 void
@@ -405,11 +461,43 @@ BaseApp::render() {
   m_shaderProgram.render(m_deviceContext);
 
   // Render the models
+  APlane->render(m_deviceContext);
   AKoro->render(m_deviceContext);
   AMorgana->render(m_deviceContext);
   APistol->render(m_deviceContext);
   ADigimon->render(m_deviceContext);
   ACerb->render(m_deviceContext);
+
+  // Render shadows
+  // Set blend state for shadows
+  m_blendState.render(m_deviceContext);
+  // Set depth stencil state for shadows (disable depth write)
+  m_shadowDepthStencilState.render(m_deviceContext);
+
+  // Light position (adjust as needed)
+  XMFLOAT4 lightPos(0.0f, 10.0f, 0.0f, 1.0f);
+
+  // Render shadows for each actor except the plane
+  std::vector<EngineUtilities::TSharedPointer<Actor>> shadowActors = { AKoro, AMorgana, APistol, ADigimon, ACerb };
+  for (auto& actor : shadowActors) {
+    // Calculate shadow matrix
+    float dot = lightPos.y;
+    XMMATRIX shadowMatrix = XMMATRIX(
+      dot, -lightPos.x, 0.0f, 0.0f,
+      0.0f, 0.0f, 0.0f, 0.0f,
+      0.0f, -lightPos.z, dot, 0.0f,
+      0.0f, -1.0f, 0.0f, dot
+    );
+
+    XMMATRIX worldShadow = actor->getComponent<Transform>()->matrix * shadowMatrix;
+
+    // Render the shadow
+    actor->renderShadow(m_deviceContext, worldShadow);
+  }
+
+  // Reset blend and depth stencil states
+  m_blendState.render(m_deviceContext, nullptr, 0xffffffff, true);
+  m_shadowDepthStencilState.render(m_deviceContext, 0, true);
 
   // Set Constant Buffers and asign Shaders
   m_neverChanges.render(m_deviceContext, 0, 1);
@@ -433,6 +521,10 @@ BaseApp::destroy() {
   APistol->destroy();
   ADigimon->destroy();
   ACerb->destroy();
+  APlane->destroy();
+
+  m_blendState.destroy();
+  m_shadowDepthStencilState.destroy();
 
   m_changeOnResize.destroy();
   m_changesEveryFrame.destroy();
@@ -564,11 +656,11 @@ void
 BaseApp::UpdateCamera() {
   // Convertir la dirección a vectores normalizados
   XMVECTOR pos = XMLoadFloat3(&m_camera.position);
-  XMVECTOR dir = XMLoadFloat3(&m_camera.forward);
+  XMVECTOR target = XMLoadFloat3(&m_camera.target);
   XMVECTOR up = XMLoadFloat3(&m_camera.up);
 
   // Calcular la nueva vista
-  m_View = XMMatrixLookAtLH(pos, pos + dir, up);
+  m_View = XMMatrixLookAtLH(pos, target, up);
 
   // Transponer y actualizar el buffer de la vista
   cbNeverChanges.mView = XMMatrixTranspose(m_View);
@@ -601,6 +693,39 @@ BaseApp::RotateCamera(int mouseX, int mouseY) {
 
   XMStoreFloat3(&m_camera.forward, XMVector3Normalize(forward));
   XMStoreFloat3(&m_camera.right, XMVector3Normalize(right));
+
+  // Update position to orbit around target
+  XMVECTOR target = XMLoadFloat3(&m_camera.target);
+  float distance = XMVectorGetX(XMVector3Length(target - XMLoadFloat3(&m_camera.position)));
+  XMVECTOR newPos = target - forward * distance;
+  XMStoreFloat3(&m_camera.position, newPos);
+}
+
+void 
+BaseApp::PanCamera(int mouseX, int mouseY) {
+  float offsetX = (mouseX - lastX) * panSpeed;
+  float offsetY = (mouseY - lastY) * panSpeed;
+  lastX = mouseX;
+  lastY = mouseY;
+
+  XMVECTOR pos = XMLoadFloat3(&m_camera.position);
+  XMVECTOR target = XMLoadFloat3(&m_camera.target);
+  XMVECTOR right = XMLoadFloat3(&m_camera.right);
+  XMVECTOR up = XMLoadFloat3(&m_camera.up);
+
+  XMVECTOR delta = -right * offsetX + up * offsetY;
+
+  pos += delta;
+  target += delta;
+
+  XMStoreFloat3(&m_camera.position, pos);
+  XMStoreFloat3(&m_camera.target, target);
+
+  // Update forward vector
+  XMVECTOR forward = XMVector3Normalize(target - pos);
+  XMStoreFloat3(&m_camera.forward, forward);
+  XMVECTOR newRight = XMVector3Cross(forward, XMLoadFloat3(&m_camera.up));
+  XMStoreFloat3(&m_camera.right, XMVector3Normalize(newRight));
 }
 
 int

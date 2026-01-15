@@ -15,6 +15,8 @@
 #include "UserInterface.h"
 #include "ModelLoader.h"
 #include "ECS/Actor.h"
+#include "BlendState.h"
+#include "DepthStencilState.h"
 
 class
   BaseApp {
@@ -80,6 +82,14 @@ public:
   RotateCamera(int mouseX, int mouseY);
 
   /**
+  * @brief Pans the camera based on mouse movement.
+  * @param mouseX The current X position of the mouse.
+  * @param mouseY The current Y position of the mouse.
+  */
+  void
+  PanCamera(int mouseX, int mouseY);
+
+  /**
    * @brief Runs the application from the main entry point.
    * @param hInstance Handle to the instance of the program.
    * @param hPrevInstance Handle to the previous instance.
@@ -109,6 +119,8 @@ private:
   Buffer                              m_changeOnResize;
   Buffer                              m_changesEveryFrame;
   UserInterface                       m_UI;
+  BlendState                          m_blendState;
+  DepthStencilState                   m_shadowDepthStencilState;
 
   Texture m_default;
   ModelLoader                         m_mloader;
@@ -131,6 +143,9 @@ private:
   EngineUtilities::TSharedPointer<Actor> ACerb;
   std::vector<Texture>                m_cerbTextures;
 
+  EngineUtilities::TSharedPointer<Actor> APlane;
+  std::vector<Texture>                m_planeTextures;
+
   XMMATRIX                            m_View;
   XMMATRIX                            m_Projection;
 
@@ -145,5 +160,7 @@ public:
   int lastX;
   int lastY;
   float sensitivity = 0.01f;
-  bool mouseLeftDown = false;
+  float panSpeed = 0.01f;
+  bool mouseRightDown = false;
+  bool mouseMiddleDown = false;
 };
