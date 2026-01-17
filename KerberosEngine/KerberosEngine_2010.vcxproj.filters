@@ -188,6 +188,12 @@
     <ClInclude Include="include\OBJ_Loader.h">
       <Filter>Include</Filter>
     </ClInclude>
+    <ClInclude Include="include\DepthStencilState.h">
+      <Filter>Include</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BlendState.h">
+      <Filter>Include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="KerberosEngine.cpp" />
@@ -262,6 +268,12 @@
     </ClCompile>
     <ClCompile Include="Source\Transform.cpp">
       <Filter>Resource Files\ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\DepthStencilState.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\BlendState.cpp">
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

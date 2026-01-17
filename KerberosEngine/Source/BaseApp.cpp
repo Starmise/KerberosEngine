@@ -102,12 +102,18 @@ BaseApp::init() {
     return hr;
   }
 
-  // Initialize depth stencil state for shadows (disable depth test and write)
-  hr = m_shadowDepthStencilState.init(m_device, false, D3D11_DEPTH_WRITE_MASK_ZERO, D3D11_COMPARISON_ALWAYS, false);
+  // Initialize depth stencil state for shadows
+  hr = m_shadowDepthStencilState.init(
+    m_device,
+    true,                              // DepthEnable
+    D3D11_DEPTH_WRITE_MASK_ZERO,
+    D3D11_COMPARISON_LESS_EQUAL,
+    false
+  );
+
   if (FAILED(hr)) {
     return hr;
   }
-
 
   // Set model actor
   // Load Textures
@@ -475,21 +481,27 @@ BaseApp::render() {
   m_shadowDepthStencilState.render(m_deviceContext);
 
   // Light position (adjust as needed)
-  XMFLOAT4 lightPos(0.0f, 10.0f, 0.0f, 1.0f);
+  XMFLOAT4 lightPos(5.0f, 10.0f, -5.0f, 1.0f);
 
   // Render shadows for each actor except the plane
   std::vector<EngineUtilities::TSharedPointer<Actor>> shadowActors = { AKoro, AMorgana, APistol, ADigimon, ACerb };
   for (auto& actor : shadowActors) {
     // Calculate shadow matrix
-    float dot = lightPos.y;
-    XMMATRIX shadowMatrix = XMMATRIX(
-      dot, -lightPos.x, 0.0f, 0.0f,
-      0.0f, 0.0f, 0.0f, 0.0f,
-      0.0f, -lightPos.z, dot, 0.0f,
-      0.0f, -1.0f, 0.0f, dot
-    );
+    XMFLOAT4 L = lightPos;
 
-    XMMATRIX worldShadow = actor->getComponent<Transform>()->matrix * shadowMatrix;
+    XMMATRIX shadowMatrix =
+    {
+      L.y,  0,    0,    0,
+     -L.x,  0,  -L.z, -1,
+      0,    0,   L.y,  0,
+      0,    0,    0,   L.y
+    };
+    XMMATRIX flattenY = XMMatrixScaling(1.0f, 0.001f, 1.0f);
+
+    XMMATRIX worldShadow =
+      actor->getComponent<Transform>()->matrix *
+      shadowMatrix *
+      flattenY;
 
     // Render the shadow
     actor->renderShadow(m_deviceContext, worldShadow);
