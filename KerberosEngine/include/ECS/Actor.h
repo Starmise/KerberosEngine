@@ -44,6 +44,14 @@ public:
   render(DeviceContext& deviceContext) override;
 
   /**
+   * @brief Renders the actor with shadow settings.
+   * @param deviceContext Reference to the device context used for rendering.
+   * @param shadowMatrix The shadow transformation matrix.
+   */
+  void
+  renderShadow(DeviceContext& deviceContext, XMMATRIX shadowMatrix);
+
+  /**
    * @brief Destroys the actor and releases associated resources.
    */
   void

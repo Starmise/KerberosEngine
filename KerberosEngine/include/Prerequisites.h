@@ -12,14 +12,14 @@
 // #include memory
 #include <thread>
 
-// Librerias DirectX
+// DirectX Libraries
 #include <d3d11.h>
 #include <d3dx11.h>
 #include <d3dcompiler.h>
 #include "resource.h"
 #include "Resource.h"
 
-// Librerías de ImGUI
+// ImGUI Lirbaries
 #include <imgui.h>
 #include <imgui_impl_dx11.h>
 #include <imgui_internal.h>
@@ -70,6 +70,8 @@ struct
   CBChangesEveryFrame {
   XMMATRIX mWorld;
   XMFLOAT4 vMeshColor;
+  float isShadow;
+  XMMATRIX ShadowMatrix;
 };
 
 enum
@@ -88,7 +90,7 @@ enum
 enum
   ComponentType {
   NONE = 0,     ///< Tipo de componente no especificado.
-  TRANSFORM = 1,///< Componente de transformación.
+  TRANSFORM = 1,///< Componente de transformaciï¿½n.
   MESH = 2,     ///< Componente de malla.
   MATERIAL = 3,  ///< Componente de material.
   PHYSICS = 4,
@@ -103,11 +105,11 @@ struct
   XMFLOAT3 target;  // Punto al que mira
 
   XMFLOAT3 up;      // Vector hacia arriba
-  XMFLOAT3 forward; // Dirección adelante
-  XMFLOAT3 right;   // Direción a la derecha
+  XMFLOAT3 forward; // Direccion adelante
+  XMFLOAT3 right;   // Direcion a la derecha
 
-  float yaw;        // Rotación en el eje Y
-  float pitch;      // Rotación en el eje X
+  float yaw;        // Rotacion en el eje Y
+  float pitch;      // Rotacion en el eje X
 
   Camera() {
     position = XMFLOAT3(0.0f, 1.0f, -5.0f);

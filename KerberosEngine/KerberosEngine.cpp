@@ -39,18 +39,30 @@ WndProc(HWND hWnd, unsigned int message, WPARAM wParam, LPARAM lParam) {
     break;
 
   case WM_RBUTTONDOWN:
-    g_bApp.mouseLeftDown = true;
+    g_bApp.mouseRightDown = true;
     break;
 
   case WM_RBUTTONUP:
-    g_bApp.mouseLeftDown = false;
+    g_bApp.mouseRightDown = false;
+    break;
+
+  case WM_MBUTTONDOWN:
+    g_bApp.mouseMiddleDown = true;
+    break;
+
+  case WM_MBUTTONUP:
+    g_bApp.mouseMiddleDown = false;
     break;
 
   case WM_MOUSEMOVE:
-    if (g_bApp.mouseLeftDown) {
+    if (g_bApp.mouseRightDown) {
       int x = LOWORD(lParam);
       int y = HIWORD(lParam);
       g_bApp.RotateCamera(x, y);
+    } else if (g_bApp.mouseMiddleDown) {
+      int x = LOWORD(lParam);
+      int y = HIWORD(lParam);
+      g_bApp.PanCamera(x, y);
     }
     break;
 
